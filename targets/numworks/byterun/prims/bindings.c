@@ -3,16 +3,22 @@
 /******************************************************************************/
 
 #ifdef __OCAML__
+// #if defined(__OCAML__) || defined(__PC__) || defined(__NUMWORKS__)
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
 #include <caml/memory.h>
-#include <caml/fail.h>
+// #include <caml/fail.h>
 #endif
 
 #if defined(__OCAML__) || defined(__PC__) || defined(__NUMWORKS__)
 
 #include "prims.h"
 #include "storage.h"
+
+
+/************************************************************************/
+/*********************** caml_numworks functions ************************/
+/************************************************************************/
 
 value caml_numworks_print_string(value s) {
   #ifdef __OCAML__
@@ -193,12 +199,15 @@ value caml_read_any_file(value v) {
     display_draw_string_full(filename, 0, 18, true, color_black, color_red);
     delay(5000);
 
-    return caml_copy_string("");
+    return (value)("");
   }
 
   // The file is found, so we return his content (content + 1 is for the autoimport status), converted to a value
   // Create a new OCaml string, using caml_copy_string(char* s), see https://ocaml.org/manual/5.2/intfc.html#ss:c-block-allocation
-  return caml_copy_string(content + 1);
+  // return caml_copy_string(content + 1);
+  return (value)(content + 1);
+  // Create a new OCaml string, using caml_alloc_initialized_string(mlsize_t len, char* s), see https://ocaml.org/manual/5.2/intfc.html#ss:c-block-allocation
+  // return caml_alloc_initialized_string(file_len, content + 1);
 }
 
 #endif

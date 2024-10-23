@@ -7,16 +7,6 @@ $ make
 Then flash the hello.nwa app to your Numworks calculator, using <https://my.numworks.com/apps> !
 *)
 
-let rec fact n =
-  if n <= 1 then 1
-  else n * fact(n-1)
-;;
-
-let rec fibonacci n =
-  if n <= 1 then n
-  else fibonacci (n-1) + fibonacci (n-2)
-;;
-
 (* WOOW reading and displaying the content of a file (from C) worked! *)
 (* print_string "cat_ocamlpy_file...";; *)
 (* cat_ocamlpy_file ();; *)
@@ -32,6 +22,18 @@ delay 5000;;
 display_push_allscreen_uniform color_black;;
 display_draw_string_small content_of_ocamlpy_file 0 0;;
 delay 10000;;
+
+
+(* Examples of OCaml basic code *)
+let rec fact n =
+  if n <= 1 then 1
+  else n * fact(n-1)
+;;
+
+let rec fibonacci n =
+  if n <= 1 then n
+  else fibonacci (n-1) + fibonacci (n-2)
+;;
 
 
 (** TODO: finish this main() test function. *)
@@ -105,7 +107,7 @@ let main () =
 
   let delta_y = 18 in
   for i = 1 to 12 do
-    let x = delta_y * i and y = delta_y * i in
+    let x = i and y = delta_y * i in
     let text =
       "draw at {"
       ^ (string_of_int x)
@@ -119,8 +121,8 @@ let main () =
   delay 250;
 
   let small_delta_y = 10 in
-  for i = 1 to 12 do
-    let x = small_delta_y * i and y = small_delta_y * i in
+  for i = 1 to 20 do
+    let x = i and y = small_delta_y * i in
     let text =
       "draw small at {"
       ^ (string_of_int x)

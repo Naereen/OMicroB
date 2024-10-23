@@ -3,7 +3,7 @@
 let default_arm_cxx_options = [ "-std=c99" ]
                               @ (String.split_on_char ' ' Config.eadk_cflags)
                               @ [ "-Os"; "-Wall"; "-ggdb"]
-(* TODO ld_flags *)
+(* TODO: ld_flags *)
 
 module NumworksConfig : DEVICECONFIG = struct
   let compile_ml_to_byte ~ppx_options ~mlopts ~cxxopts ~local ~trace ~verbose
@@ -48,9 +48,9 @@ let compile_c_to_hex ~local ~trace:_ ~verbose input output =
   let cmd = [ Config.arm_cxx ] @ default_arm_cxx_options in
   let cmd = cmd @ [ "-Wl,--relocatable" ] in
   let cmd = cmd @ [ "-nostartfiles" ] in
-  (* FIXME: find which -specs=... file should be used *)
+  (* FIXED: find which -specs=... file should be used *)
   let cmd = cmd @ [ "-specs=nano.specs" ] in
-  (* let cmd = cmd @ [ "-specs=nosys.specs" ] in *)
+  (* let cmd = cmd @ [ "-specs=nosys.specs" ] in *) (* this one broke everything...*)
   let cmd = cmd @ [ "-fdata-sections"; "-ffunction-sections" ] in
   let cmd = cmd @ [ "-Wl,-e,__start"; "-Wl,-u,eadk_app_name"; "-Wl,-u,eadk_app_icon"; "-Wl,-u,eadk_api_level" ] in
   let cmd = cmd @ [ "-Wl,--gc-sections" ] in
