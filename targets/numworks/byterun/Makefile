@@ -10,9 +10,7 @@ CFLAGS += -ggdb
 LDFLAGS = -Wl,--relocatable
 LDFLAGS += -nostartfiles
 
-# FIXME: find which -specs=... file should be used
 LDFLAGS += -specs=nano.specs
-#LDFLAGS += -specs=nosys.specs # Alternatively, use full-fledged newlib
 
 AR = arm-none-eabi-ar
 

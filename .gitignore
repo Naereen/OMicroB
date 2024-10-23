@@ -18,3 +18,4 @@
 .vscode/
 node_modules/
 config.ml
+src/byterun/prims/eadk.h
