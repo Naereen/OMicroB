@@ -143,12 +143,15 @@ void format_long(char *buf, int bufsize, value v) {
 /******************************************************************************/
 
 void _exit(int code) {
-  // TODO
+  // TODO: implement this _exit function?
 }
 
-void _kill(int pid, int sig) {}
+void _kill(int pid, int sig) {
+  // TODO: implement this _kill function?
+}
 
 int _getpid() {
+  // TODO: implement this _getpid function?
   return 0;
 }
 
@@ -157,23 +160,23 @@ int _getpid() {
 /******************************************************************************/
 
 bool read_bit(uint8_t reg, uint8_t bit) {
-  return 0; // TODO
+  return 0; // TODO: read_bit should be written?
 }
 
 void set_bit(uint8_t reg, uint8_t bit) {
-  return; // TODO
+  return; // TODO: set_bit should be written?
 }
 
 void clear_bit(uint8_t reg, uint8_t bit) {
-  return; // TODO
+  return; // TODO: clear_bit should be written?
 }
 
 void write_register(uint8_t reg, uint8_t val) {
-  return; // TODO
+  return; // TODO: write_register should be written?
 }
 
 uint8_t read_register(uint8_t reg) {
-  return 0; // TODO
+  return 0; // TODO: read_register should be written?
 }
 
 void delay(int ms) {
@@ -185,7 +188,7 @@ void delay_usec(int us) {
 }
 
 int millis() {
-  return (int) eadk_timing_millis(); // TODO test it?
+  return (int) eadk_timing_millis();
 }
 
 /******************************************************************************/
@@ -196,4 +199,17 @@ int millis() {
 
 void display_draw_string(const char * text, int x, int y) {
   return eadk_display_draw_string(text, (eadk_point_t){(uint16_t)x, (uint16_t)y}, true, eadk_color_black, eadk_color_white);
+}
+
+void display_draw_string_small(const char * text, int x, int y) {
+  return eadk_display_draw_string(text, (eadk_point_t){(uint16_t)x, (uint16_t)y}, false, eadk_color_black, eadk_color_white);
+}
+
+// FIXME: this RESET the calculator?
+void display_draw_string_full(const char * text, int x, int y, bool large_font, int text_color, int background_color) {
+  return eadk_display_draw_string(text, (eadk_point_t){(uint16_t)x, (uint16_t)y}, large_font, (eadk_color_t) text_color, (eadk_color_t) background_color);
+}
+
+void display_push_allscreen_uniform(int background_color) {
+  return eadk_display_push_rect_uniform(eadk_screen_rect, (eadk_color_t) background_color);
 }
