@@ -16,6 +16,9 @@ module NumworksConfig : DEVICECONFIG = struct
   let cmd = cmd @ [ "-I"; Filename.concat libdir "targets/numworks";
                     Filename.concat libdir "targets/numworks/numworks.cma";
                     "-open"; "Numworks" ] in
+  (* FIXME: should this be added? To allow references to the EADK lib functions to be added later, by the flashing website ? *)
+  (* See: https://stackoverflow.com/questions/5555632/can-gcc-not-complain-about-undefined-references#5556948 *)
+  let cmd = cmd @ [ "-ccopt"; "-Wl,--allow-shlib-undefined,--unresolved-symbols=ignore-all" ] in
   let cmd = cmd @ inputs @ [ "-o"; output ] in
   run ~vars ~verbose cmd
 
@@ -45,7 +48,13 @@ let compile_c_to_hex ~local ~trace:_ ~verbose input output =
   let cmd = [ Config.arm_cxx ] @ default_arm_cxx_options in
   let cmd = cmd @ [ "-Wl,--relocatable" ] in
   let cmd = cmd @ [ "-nostartfiles" ] in
+<<<<<<< HEAD
   let cmd = cmd @ [ "--specs=nano.specs" ] in
+=======
+  (* FIXME: find which -specs=... file should be used *)
+  let cmd = cmd @ [ "-specs=nano.specs" ] in
+  (* let cmd = cmd @ [ "-specs=nosys.specs" ] in *)
+>>>>>>> 022373c (allow references to the EADK lib functions to be added later, by the flashing website)
   let cmd = cmd @ [ "-fdata-sections"; "-ffunction-sections" ] in
   let cmd = cmd @ [ "-Wl,-e,__start"; "-Wl,-u,eadk_app_name"; "-Wl,-u,eadk_app_icon"; "-Wl,-u,eadk_api_level" ] in
   let cmd = cmd @ [ "-Wl,--gc-sections" ] in
@@ -66,7 +75,7 @@ let compile_c_to_hex ~local ~trace:_ ~verbose input output =
   let simul_flag = "__SIMUL_NUMWORKS__"
 
   let flash ~sudo:_ ~verbose:_ _hexfile =
-    failwith "TODO"
+    failwith "Error: flashing is not supported, use <https://my.numworks.com/apps> instead to flash the resulting NWA app to your Numworks calculator."
 end
 
 (******************************************************************************)
@@ -77,7 +86,7 @@ let get_config name = match name with
   | _ -> get_config name
 
 (** Get the names of all configs *)
-let all_config_names () = [ "numworks" ]@(all_config_names ())
+let all_config_names () = [ "numworks" ] @ (all_config_names ())
 
 (******************************************************************************)
 (******************************************************************************)
