@@ -28,20 +28,27 @@ val print_float : float -> unit
 (* Functions from the EADK library *)
 (***********************************)
 
-val display_draw_string : string -> int -> int -> unit
-val display_draw_string_small : string -> int -> int -> unit
-val display_draw_string_large : string -> int -> int -> unit
-val display_draw_string_full : string -> int -> int -> bool -> int -> int -> unit
 val color_black : int
 val color_white : int
 val color_red : int
 val color_green : int
 val color_blue : int
 
+val screen_width : int
+val screen_height : int
+
+val display_draw_string : string -> int -> int -> unit
+val display_draw_string_small : string -> int -> int -> unit
+val display_draw_string_large : string -> int -> int -> unit
+val display_draw_string_full : string -> int -> int -> bool -> int -> int -> unit (* FIXME: it RESETs the calculator! *)
+
+val display_push_allscreen_uniform : int -> unit
 
 (*******************)
 (* Storage library *)
 (*******************)
 
-val read_ocaml_file : unit -> int
-val read_any_file : string -> int
+val cat_any_file : string -> int
+val cat_ocamlpy_file : unit -> int
+val read_any_file : string -> string
+val read_ocamlpy_file : unit -> string

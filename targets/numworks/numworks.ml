@@ -38,22 +38,35 @@ let print_float f = print_string (string_of_float f);;
 (* Functions from the EADK library *)
 (***********************************)
 
-external display_draw_string : string -> int -> int -> unit = "caml_display_draw_string" [@@noalloc]
-external display_draw_string_small : string -> int -> int -> unit = "caml_display_draw_string_small" [@@noalloc]
-let display_draw_string_large = display_draw_string
-external display_draw_string_full : string -> int -> int -> bool -> int -> int -> unit = "caml_display_draw_string_full" [@@noalloc]
 let color_black : int = 0x0
 let color_white : int = 0xFFFF
 let color_red : int = 0xF800
 let color_green : int = 0x07E0
 let color_blue : int = 0x001F
 
+let screen_width = 320
+let screen_height = 240
+
+external display_draw_string : string -> int -> int -> unit = "caml_display_draw_string" [@@noalloc]
+external display_draw_string_small : string -> int -> int -> unit = "caml_display_draw_string_small" [@@noalloc]
+let display_draw_string_large = display_draw_string  (* an alias only *)
+
+(* FIXME: it RESETs the calculator! *)
+external display_draw_string_full : string -> int -> int -> bool -> int -> int -> unit = "caml_display_draw_string_full" [@@noalloc]
+
+external display_push_allscreen_uniform : int -> unit = "caml_display_push_allscreen_uniform" [@@noalloc]
+
 
 (*******************)
 (* Storage library *)
 (*******************)
 
-external read_any_file : string -> int = "caml_read_any_file" [@@noalloc]
-let read_ocaml_file () =
+external cat_any_file : string -> int = "caml_cat_any_file" [@@noalloc]
+let cat_ocamlpy_file () =
+  cat_any_file "ocaml.py"
+;;
+
+external read_any_file : string -> string = "caml_read_any_file" [@@noalloc]
+let read_ocamlpy_file () =
   read_any_file "ocaml.py"
 ;;

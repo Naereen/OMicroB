@@ -4,7 +4,7 @@ Simply install OMicroB with this line from the main OMicroB directory:
 $ make clean && ./configure -target numworks && make
 Then run in this tests/hello_world/ directory
 $ make
-Then flash (using <https://my.numworks.com/apps>) the hello.nwa app to your Numworks calculator!
+Then flash the hello.nwa app to your Numworks calculator, using <https://my.numworks.com/apps> !
 *)
 
 let rec fact n =
@@ -17,9 +17,24 @@ let rec fibonacci n =
   else fibonacci (n-1) + fibonacci (n-2)
 ;;
 
-(* TODO: test this reading of a file! *)
-read_ocaml_file ();;
+(* WOOW reading and displaying the content of a file (from C) worked! *)
+(* print_string "cat_ocamlpy_file...";; *)
+(* cat_ocamlpy_file ();; *)
+(* print_string "cat_ocamlpy_file done";; *)
+(* delay 10000;; *)
 
+(* TODO: read from C and return a OCaml string *)
+print_string "read_ocamlpy_file...";;
+let content_of_ocamlpy_file : string = read_ocamlpy_file () ;;
+print_string "read_ocamlpy_file done";;
+delay 5000;;
+
+display_push_allscreen_uniform color_black;;
+display_draw_string_small content_of_ocamlpy_file 0 0;;
+delay 10000;;
+
+
+(** TODO: finish this main() test function. *)
 let main () =
   delay 1000;
   print_endline "Starting tests";
@@ -119,7 +134,7 @@ let main () =
   delay 1000;
 
   (* FIXME: this test breaks my calculator, it makes it RESET completely! *)
-  let delta_y = 18 in
+  (* let delta_y = 18 in
   for i = 1 to 12 do
     let x = delta_y * i and y = delta_y * i in
     let text =
@@ -132,7 +147,7 @@ let main () =
     display_draw_string_full text x y false color_red color_blue ;
     delay 250;
   done;
-  delay 1000;
+  delay 1000; *)
 
   print_string "Done for all the tests.";
   delay 1000;

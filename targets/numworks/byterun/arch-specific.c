@@ -195,7 +195,7 @@ int millis() {
 /******************************* EADK library *********************************/
 /******************************************************************************/
 
-// TODO: write here some useful functions written as bindings for the eadh.k library
+// TODO: write here some useful functions written as bindings for the eadk.h library
 
 void display_draw_string(const char * text, int x, int y) {
   return eadk_display_draw_string(text, (eadk_point_t){(uint16_t)x, (uint16_t)y}, true, eadk_color_black, eadk_color_white);
