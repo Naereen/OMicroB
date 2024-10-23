@@ -5,6 +5,7 @@ TARGETS := $(LIB)/libcamlrun.a
 HEADERS := $(wildcard */*.h)
 
 OBJECTS :=              \
+  .build/storage.o      \
   .build/bindings.o     \
   .build/random.o       \
   .build/trace.o        \

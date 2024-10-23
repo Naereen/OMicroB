@@ -304,12 +304,12 @@ function target_numworks () {
 
     cat "targets/numworks/byterun/prims/prims.h" >> "src/byterun/prims/prims.h"
     cat "targets/numworks/byterun/prims/eadk.h" >> "src/byterun/prims/eadk.h"
+    cat "targets/numworks/byterun/prims/storage.c" >> "src/byterun/prims/bindings.c"
+    cp -vf "targets/numworks/byterun/prims/storage.h" "src/byterun/prims/storage.h"
     cat "targets/numworks/byterun/prims/bindings.c" >> "src/byterun/prims/bindings.c"
     cat "targets/numworks/byterun/prims/prims.h" >> "src/byterun/simul/sf-regs.h"
     cat "targets/numworks/byterun/simul/sf-regs.c" >> "src/byterun/simul/sf-regs.c"
 
-    # cp -f "targets/numworks/byterun/arch-specific.c" "src/byterun/numworks/"
-    # cp -f "targets/numworks/byterun/arch-specific.h" "src/byterun/numworks/"
     cp -rf "targets/numworks/byterun" "src/byterun/numworks"
 
     echo "ARCHS := numworks \$(ARCHS)" >> "etc/Makefile.conf"
