@@ -1,7 +1,7 @@
 all: startup.o icon.o
 
 CC = arm-none-eabi-gcc
-NWLINK = npx --yes -- nwlink@0.0.16
+NWLINK = npx --yes -- nwlink@0.0.17
 
 CFLAGS = -std=c99
 CFLAGS += $(shell $(NWLINK) eadk-cflags)
@@ -9,7 +9,10 @@ CFLAGS += -Os -Wall
 CFLAGS += -ggdb
 LDFLAGS = -Wl,--relocatable
 LDFLAGS += -nostartfiles
-LDFLAGS += --specs=nano.specs
+
+# FIXME: find which -specs=... file should be used
+LDFLAGS += -specs=nano.specs
+#LDFLAGS += -specs=nosys.specs # Alternatively, use full-fledged newlib
 
 AR = arm-none-eabi-ar
 
