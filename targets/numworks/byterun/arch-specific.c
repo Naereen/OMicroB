@@ -39,7 +39,7 @@ void debug_blink_pause(void) {
   eadk_timing_msleep(1000);
 }
 
-void uncaught_exception(value) {
+void uncaught_exception(value v) {
   debug_blink_error();
 }
 
@@ -177,9 +177,23 @@ uint8_t read_register(uint8_t reg) {
 }
 
 void delay(int ms) {
-  eadk_timing_msleep(ms);
+  return eadk_timing_msleep(ms);
+}
+
+void delay_usec(int us) {
+  return eadk_timing_usleep(us);
 }
 
 int millis() {
-  return 0; // TODO
+  return (int) eadk_timing_millis(); // TODO test it?
+}
+
+/******************************************************************************/
+/******************************* EADK library *********************************/
+/******************************************************************************/
+
+// TODO: write here some useful functions written as bindings for the eadh.k library
+
+void display_draw_string(const char * text, int x, int y) {
+  return eadk_display_draw_string(text, (eadk_point_t){(uint16_t)x, (uint16_t)y}, true, eadk_color_black, eadk_color_white);
 }
