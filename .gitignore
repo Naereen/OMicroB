@@ -10,8 +10,10 @@
 **/*.pic32_elf
 **/*.avr
 **/*.hex
+**/*.nwa
 **/*.elf.dSYM
 **/*~
+**/.*.swp
 .build/
 .vscode/
 node_modules/
