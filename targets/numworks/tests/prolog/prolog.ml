@@ -167,9 +167,11 @@ let rec read_all_lines_rec acc filter input_channel =
   with | End_of_file -> acc
 
 let read_all_lines filter input_channel =
-  read_all_lines_rec [] filter input_channel
+  read_all_lines_rec [] filter input_channel *)
 
-let is_not_comment s = not (String.contains s '#') *)
+let is_not_comment s = not (String.contains s '#' || s = "")
+let filter_out_comments list_of_strings =
+  List.filter is_not_comment list_of_strings
 
 (* let parse_prog acc f =
   let file = open_in f in
@@ -186,6 +188,7 @@ let is_not_comment s = not (String.contains s '#') *)
 let parse_progs lis = List.fold_left parse_prog [] lis *)
 
 let parse_string acc str =
+  (* TODO: when there are comments, everything fails *)
   let flx4 = Mystream.of_string str in
   parse_prog_parser acc (lex flx4)
 
@@ -215,6 +218,10 @@ let rec yes_or_no mess =
 let display_subst s =
   print_string "  ";
   print_endline (print_subst s)
+
+let eadk_display_subst ?(delta_y = 0) s =
+  display_draw_string ("Answer:  " ^ (print_subst s)) 0 delta_y
+
 
 (* resolution.ml *)
 let rec subst x t trm =
@@ -276,10 +283,10 @@ let rec search_clauses num prog trm =
         else search_clauses num q trm
 
 let rec
-  prove_goals_rec ?(maxoutput = 10) ?(interactive = true) but num prog s =
+  prove_goals_rec ?(delta_y = 0) ?(maxoutput = 10) ?(interactive = false) but num prog s =
   function
   | [] ->
-      (display_subst (List.filter (fun (v, _) -> occurence_list v but) s);
+      (eadk_display_subst ~delta_y:delta_y (List.filter (fun (v, _) -> occurence_list v but) s);
        if interactive
        then if not (yes_or_no "continue ?") then failwith "end" else ()
        else ();
@@ -289,59 +296,102 @@ let rec
       in
         do_list
           (fun (s2, cl) ->
-             prove_goals_rec ~maxoutput: (maxoutput - 1)
+             prove_goals_rec ~delta_y:(delta_y + 10) ~maxoutput: (maxoutput - 1)
                ~interactive: interactive but (num + 1) prog (compose s2 s)
                (map (app_subst s2) (cl.neg @ q)))
           ssButs
 
-let prove_goals ?(maxoutput = 10) ?(interactive = true) prog trm_list =
+let prove_goals ?(delta_y = 0) ?(maxoutput = 10) ?(interactive = false) prog trm_list =
   try
-    prove_goals_rec ~maxoutput: maxoutput ~interactive: interactive trm_list
+    prove_goals_rec ~delta_y:delta_y ~maxoutput: maxoutput ~interactive: interactive trm_list
       0 prog [] trm_list
   with | Failure "end" -> ()
 
+
 (* prolog.ml *)
 
-(* TODO: this should be READ from a "prolog_theory.py" file, from the local storage *)
-let default_programs = ["
+let rec string_join_on c strings =
+  match strings with
+  | [] -> ""
+  | [s0] -> s0
+  | s0 :: s1sn ->
+      s0 ^ c ^ (string_join_on c s1sn)
+;;
+
+
+(* DONE: this is now read from a "prolog_theory.py" file, from the local storage *)
+let prolog_theory_content = read_any_file "prolog_theory.py"
+let default_programs = ref [];;
+if prolog_theory_content <> "" then
+  default_programs := [ prolog_theory_content ]
+else
+  default_programs := [
+"# Fichier Prolog, pas Python
+# Une theorie : des faits.
+# Cf. OMicroB OCaml Prolog
+# Par Lilian Besson (Naereen)
 cat(tom).
 mouse(jerry).
 
 fast(X) <-- mouse(X).
 stupid(X) <-- cat(X).
 
-ishuntedby(X, Y) <-- mouse(X), cat(Y).
-"]
-(* let default_programs = [ read_any_file "prolog_theory.py" ] *)
+ishuntedby(X, Y) <-- mouse(X), cat(Y)." ]
+let default_programs = !default_programs
 
-(* TODO: this should be READ from a "prolog_questions.py" file, from the local storage *)
-let default_questions = [
-  "stupid(X).";
-  "fast(Y).";
-  "ishuntedby(Z, W).";
-]
-(* let default_questions = [ read_any_file "prolog_questions.py" ] *)
+(* DONE: this is now read from a "prolog_questions.py" file, from the local storage *)
+let prolog_questions_content = read_any_file "prolog_questions.py"
+let default_questions = ref "";;
+if prolog_questions_content <> "" then
+  default_questions := prolog_questions_content
+else
+  default_questions :=
+"# Fichier Prolog, pas Python
+# Une liste de questions.
+# Cf. OMicroB OCaml Prolog
+# Par Lilian Besson (Naereen)
+stupid(A).
+fast(B).
+ishuntedby(C, D)."
+let default_questions = filter_out_comments (String.split_on_char '\n' !default_questions)
 
 let numworks_main () =
-  let delay_secs = 2 * 1000 in
+  let long_delay = 3_000 in
+  let short_delay = 500 in
+  let delta_y = 18 in
+  delay short_delay;
   clear_screen ();
-  delay delay_secs;
-  print_string "Loading ";
-  print_int (List.length default_programs);
-  print_endline " theory file(s)...";
-  delay delay_secs;
+  delay short_delay;
+  display_draw_string ("Loading " ^ (string_of_int (List.length default_programs)) ^ " theory content(s)...") 0 0;
+  delay long_delay;
+  List.iter (fun program_content ->
+    clear_screen();
+    delay short_delay;
+    display_draw_string "1. Loading this theory:" 0 0;
+    display_draw_string_small program_content 0 delta_y
+    ) default_programs;
+  delay long_delay;
+  let default_programs = List.map (fun program_content -> string_join_on "\n" (filter_out_comments (String.split_on_char '\n' program_content))) default_programs in
   let prog = parse_strings default_programs in
   clear_screen ();
-  print_endline "Loaded theory files...";
-  delay delay_secs;
+  delay short_delay;
+  display_draw_string ("2. Loaded " ^ (string_of_int (List.length default_programs)) ^ " theory content(s) !") 0 0;
+  display_draw_string ("Giving "^ (string_of_int (List.length prog)) ^ " fact(s) !") 0 delta_y;
+  delay long_delay;
 
   List.iter (fun question ->
-    print_endline ("?- " ^ question ^ "\n");
-    delay delay_secs;
+    clear_screen();
+    delay short_delay;
+    display_draw_string "3. Parsing this question..." 0 0;
+    display_draw_string ("?- " ^ question) 0 delta_y;
+    delay long_delay;
     let trm_list = parse_goal question in
-    prove_goals ~interactive:false prog trm_list;
-    delay delay_secs;
-    clear_screen()
+    display_draw_string ("4. Parsed! " ^ (string_of_int (List.length trm_list)) ^ " term(s).") 0 (2*delta_y);
+    display_draw_string "5. Now answering it:" 0 (3*delta_y);
+    delay long_delay;
+    prove_goals ~delta_y:(4*delta_y) ~interactive:false prog trm_list;
+    delay long_delay;
+    clear_screen ()
   ) default_questions
 
 (* let interactive_main () =
@@ -367,8 +417,10 @@ let numworks_main () =
             let trm_list = parse_goal (read_line ())
             in prove_goals ~interactive:true prog trm_list))
     else () *)
-(* TODO: add interactivity ? at least read the content of the "prolog.py" file, on the Numworks *)
-let interactive_main = numworks_main
+
+(* TODO: add interactivity with keyboard input? I don't plan on doing it, it seems hard. *)
+(* TODO: At least read the content of the "prolog.py" file, on the Numworks *)
+let interactive_main = numworks_main ;;
 
 let interactive = false ;;
 
