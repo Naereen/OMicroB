@@ -7,7 +7,7 @@
 #include <caml/alloc.h>
 #include <caml/memory.h>
 #include <caml/fail.h>
-#include <caml/fiber.h>
+// #include <caml/fiber.h>
 #endif
 
 #if defined(__OCAML__) || defined(__PC__) || defined(__NUMWORKS__)
@@ -71,6 +71,10 @@ value caml_delay_usec(value us) {
 
 // TODO: write here some useful functions written as bindings for the eadh.k library
 
+/***********/
+/* Display */
+/***********/
+
 value caml_display_draw_string(value text, value x, value y) {
   #ifdef __OCAML__
   display_draw_string(String_val(text), Int_val(x), Int_val(y));
@@ -110,9 +114,57 @@ value caml_display_draw_string_full(value text, value x, value y, value large_fo
   return Val_unit;
 }
 
+value caml_display_push_rect_uniform(value background_color, value x, value y, value width, value height) {
+  display_push_rect_uniform(Int_val(background_color), Int_val(x), Int_val(y), Int_val(width), Int_val(height));
+  return Val_unit;
+}
+
 value caml_display_push_allscreen_uniform(value background_color) {
   display_push_allscreen_uniform(Int_val(background_color));
   return Val_unit;
+}
+
+/*************/
+/* Backlight */
+/*************/
+
+value caml_backlight_set_brightness(value brightness) {
+  eadk_backlight_set_brightness((uint8_t) Val_int(brightness));
+  return Val_unit;
+}
+value caml_backlight_brightness(value unit) {
+  return Val_int(eadk_backlight_brightness());
+}
+
+/***********/
+/* Battery */
+/***********/
+
+value caml_battery_is_charging(value unit) {
+  return Val_bool(battery_is_charging());
+}
+value caml_battery_level(value unit) {
+  return Val_int(battery_level());
+}
+value caml_battery_voltage(value unit) {
+  double bv = battery_voltage();
+  value result;
+  * (double*) result = bv;
+  // Store_double_val(result, bv);
+  return result;
+  // return Val_double(battery_voltage());  // FIXME: Val_double is unavailable?
+}
+
+/********/
+/* Misc */
+/********/
+
+value caml_random(value unit) {
+  return Val_int(random ());
+}
+
+value caml_usb_is_plugged(value unit) {
+  return Val_bool(usb_is_plugged ());
 }
 
 /******************************************************************************/
@@ -207,7 +259,11 @@ value caml_read_any_file(value v) {
   #endif
 }
 
-//
+
+/**********************************************************************/
+/************************** caml_lex_engine ***************************/
+/**********************************************************************/
+
 // Manual implementation of caml_lex_engine from ocaml/runtime/lexing.c
 // See https://github.com/ocaml/ocaml/blob/fd41e1ab55fa11cbb98df2dab96e43b5540db31c/runtime/lexing.c#L65
 #ifndef __OCAML__
@@ -252,7 +308,9 @@ struct lexing_table {
 #define UShort(tbl,n) (((unsigned short *)(tbl))[(n)])
 #endif
 
-CAMLprim value caml_lex_engine(value vtbl, value start_state, value vlexbuf)
+#define Byte_u(x, i) (((unsigned char *) (x)) [i]) /* Also an l-value. */
+
+value caml_lex_engine(value vtbl, value start_state, value vlexbuf)
 {
   struct lexing_table * tbl = (struct lexing_table *) vtbl;
   struct lexer_buffer * lexbuf = (struct lexer_buffer *) vlexbuf;
@@ -286,7 +344,7 @@ CAMLprim value caml_lex_engine(value vtbl, value start_state, value vlexbuf)
       }
     }else{
       /* Read next input char */
-      c = Byte_u(lexbuf->lex_buffer, Long_val(lexbuf->lex_curr_pos));
+      c = Byte_u(lexbuf->lex_buffer, Int_val(lexbuf->lex_curr_pos));
       lexbuf->lex_curr_pos += 2;
     }
     /* Determine next state */
@@ -298,7 +356,8 @@ CAMLprim value caml_lex_engine(value vtbl, value start_state, value vlexbuf)
     if (state < 0) {
       lexbuf->lex_curr_pos = lexbuf->lex_last_pos;
       if (lexbuf->lex_last_action == Val_int(-1)) {
-        caml_failwith("lexing: empty token");
+        // caml_failwith("lexing: empty token");
+        printf("lexing error: empty token");
       } else {
         return lexbuf->lex_last_action;
       }

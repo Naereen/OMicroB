@@ -210,6 +210,32 @@ void display_draw_string_full(const char * text, int x, int y, bool large_font, 
   return eadk_display_draw_string(text, (eadk_point_t){(uint16_t)x, (uint16_t)y}, large_font, (eadk_color_t) text_color, (eadk_color_t) background_color);
 }
 
+void display_push_rect_uniform(int background_color, int x, int y, int width, int height) {
+  return eadk_display_push_rect_uniform((eadk_rect_t){x, y, width, height}, (eadk_color_t) background_color);
+}
+
 void display_push_allscreen_uniform(int background_color) {
   return eadk_display_push_rect_uniform(eadk_screen_rect, (eadk_color_t) background_color);
 }
+
+/*************/
+/* Backlight */
+/*************/
+
+void backlight_set_brightness(uint8_t brightness) { return eadk_backlight_set_brightness(brightness); }
+uint8_t backlight_brightness() { return eadk_backlight_brightness(); }
+
+/***********/
+/* Battery */
+/***********/
+
+bool battery_is_charging() { return eadk_battery_is_charging(); }
+uint8_t battery_level() { return eadk_battery_level(); }
+float battery_voltage() { return eadk_battery_voltage(); }
+
+/********/
+/* Misc */
+/********/
+
+bool usb_is_plugged() { return eadk_usb_is_plugged(); }
+uint32_t random() { return eadk_random(); }

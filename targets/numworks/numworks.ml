@@ -54,11 +54,37 @@ let display_draw_string_large = display_draw_string  (* an alias only *)
 (* FIXME: it RESETs the calculator! *)
 external display_draw_string_full : string -> int -> int -> bool -> int -> int -> unit = "caml_display_draw_string_full" [@@noalloc]
 
+external display_push_rect_uniform : int -> int -> int -> int -> int -> unit = "caml_display_push_rect_uniform" [@@noalloc]
+
 external display_push_allscreen_uniform : int -> unit = "caml_display_push_allscreen_uniform" [@@noalloc]
 
 let clear_screen () = display_push_allscreen_uniform color_white;;
 let clear_black_screen () = display_push_allscreen_uniform color_black;;
 
+
+(*************)
+(* Backlight *)
+(*************)
+
+external backlight_set_brightness : int -> unit = "caml_backlight_set_brightness" [@@noalloc]
+external backlight_brightness : unit -> int = "caml_backlight_brightness" [@@noalloc]
+
+
+(***********)
+(* Battery *)
+(***********)
+
+external battery_is_charging : unit -> bool = "caml_battery_is_charging" [@@noalloc]
+external battery_level : unit -> int = "caml_battery_level" [@@noalloc]
+external battery_voltage : unit -> float = "caml_battery_voltage" [@@noalloc]
+
+
+(********)
+(* Misc *)
+(********)
+
+external random : unit -> int = "caml_random" [@@noalloc]
+external usb_is_plugged : unit -> bool = "caml_usb_is_plugged" [@@noalloc]
 
 (*******************)
 (* Storage library *)

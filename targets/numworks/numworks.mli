@@ -40,11 +40,36 @@ val screen_height : int
 val display_draw_string : string -> int -> int -> unit
 val display_draw_string_small : string -> int -> int -> unit
 val display_draw_string_large : string -> int -> int -> unit
-val display_draw_string_full : string -> int -> int -> bool -> int -> int -> unit (* FIXME: it RESETs the calculator! *)
+val display_draw_string_full : string -> int -> int -> bool -> int -> int -> unit (* FIXME: it can RESET the calculator! I don't know why. Wrong conversion from an OCaml int to a uint16_t? *)
 
+val display_push_rect_uniform : int -> int -> int -> int -> int -> unit
 val display_push_allscreen_uniform : int -> unit
 val clear_screen : unit -> unit
 val clear_black_screen : unit -> unit
+
+
+(*************)
+(* Backlight *)
+(*************)
+
+val backlight_set_brightness : int -> unit
+val backlight_brightness : unit -> int
+
+(***********)
+(* Battery *)
+(***********)
+
+val battery_is_charging : unit -> bool
+val battery_level : unit -> int
+val battery_voltage : unit -> float
+
+
+(********)
+(* Misc *)
+(********)
+
+val random : unit -> int
+val usb_is_plugged : unit -> bool
 
 (*******************)
 (* Storage library *)

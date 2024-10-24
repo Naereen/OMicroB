@@ -21,3 +21,4 @@ config.ml
 src/byterun/prims/eadk.h
 src/byterun/prims/storage.c
 src/byterun/prims/storage.h
+**/*.log

@@ -5,7 +5,7 @@ PROG = hello
 EADK_APP_NAME = OMicroB-tests
 
 # FIXME: my examples of recursive functions broke quite quickly, do they perform better with an increased STACK_SIZE and HEAP_SIZE ?
-STACK_SIZE = 2048
+STACK_SIZE = 8192
 HEAP_SIZE = 8192
 
 # Use the first line if you want to compile also the PC simulator. FIXME: it is not at all developped for the Numworks target.

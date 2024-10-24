@@ -7,29 +7,32 @@ $ make
 Then flash the hello.nwa app to your Numworks calculator, using <https://my.numworks.com/apps> !
 *)
 
-(* WOOW reading and displaying the content of a file (from C) worked! *)
-print_endline "cat_ocamlpy_file...";;
-cat_ocamlpy_file ();;
-print_endline "cat_ocamlpy_file done";;
-delay 3000;;
-clear_screen();;
+let test_cat_read_files () =
+  (* WOOW reading and displaying the content of a file (from C) worked! *)
+  print_endline "cat_ocamlpy_file...";
+  let _ = cat_ocamlpy_file () in
+  print_endline "cat_ocamlpy_file done";
+  delay 3000;
+  clear_screen();
 
-(* TODO: read from C and return a OCaml string *)
-print_endline "read_ocamlpy_file...\r\n";;
-let content_of_ocamlpy_file : string = read_ocamlpy_file () ;;
-print_endline "read_ocamlpy_file done\r\n";;
-delay 5000;;
+  (* DONE: read from C and return a OCaml string *)
+  print_endline "read_ocamlpy_file...\r\n";
+  let content_of_ocamlpy_file : string = read_ocamlpy_file () in
+  print_endline "read_ocamlpy_file done\r\n";
+  delay 5000;
 
-display_push_allscreen_uniform color_blue;;
-display_draw_string_small content_of_ocamlpy_file 0 0;;
-delay 10000;;
+  display_push_allscreen_uniform color_blue;
+  display_draw_string_small content_of_ocamlpy_file 0 0;
+  delay 10000;
 
-(* display_push_allscreen_uniform color_blue;; *)
-(* display_draw_string_small (String.make 50 'X') 0 0;; *)
-(* delay 10000;; *)
+  (* display_push_allscreen_uniform color_blue; *)
+  (* display_draw_string_small (String.make 50 'X') 0 0; *)
+  (* delay 10000; *)
+;;
 
+(* test_cat_read_files ();; *)
 
-(* Examples of OCaml basic code *)
+(* Examples of OCaml basic recursive code, to test the limit of the stack-size and heap-size *)
 let rec fact n =
   if n <= 1 then 1
   else n * fact(n-1)
@@ -60,6 +63,41 @@ let main () =
 
   (* delay 1000; *)
   (* print_newline (); *)
+
+  delay 1000; clear_screen ();
+  print_endline "backlight_brightness():";
+  print_int (backlight_brightness());
+
+  delay 1000; clear_screen ();
+  print_endline "backlight_set_brightness(0):";
+  delay 500;
+  backlight_set_brightness(0);
+  delay 500;
+  print_endline "backlight_set_brightness(100):";
+  backlight_set_brightness(100);
+  delay 500;
+
+  (* delay 1000; clear_screen ();
+  print_endline "battery_is_charging():";
+  print_bool (battery_is_charging()); *)
+
+  (* delay 1000; clear_screen ();
+  print_endline "battery_level():";
+  print_int (battery_level()); *)
+
+  (* delay 1000; clear_screen ();
+  print_endline "battery_voltage():";
+  print_float (battery_voltage()); *)
+
+  (* delay 1000; clear_screen ();
+  print_endline "usb_is_plugged():";
+  print_bool (usb_is_plugged()); *)
+
+  for _ = 1 to 5 do
+    delay 1000; clear_screen ();
+    print_endline "random():";
+    print_int (random());
+  done;
 
   delay 1000; clear_screen ();
   print_endline "print_endline():";
@@ -108,7 +146,9 @@ let main () =
 
   delay 1000; clear_screen ();
   print_endline "Loop #3.";
-  (* FIXME: fibonacci_rec fails VERY quickly, I guess the stack size for recursive function is VERY LIMITED? *)
+  (* FIXME: fibonacci_rec fails VERY quickly, I guess the stack size for recursive function is VERY LIMITED?
+     The STACK_SIZE parameter in the Makefile allows now to change this parameter, to increase it.
+  *)
   let max_n = 30 in
   for n = 0 to max_n do
     print_string "fibonacci_rec "; print_int n; print_string " = "; print_int (fibonacci_rec n);
@@ -169,4 +209,4 @@ let main () =
   delay 1000;
 ;;
 
-(* main ();; *)
+main ();;
