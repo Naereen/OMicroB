@@ -19,12 +19,12 @@ let content_of_ocamlpy_file : string = read_ocamlpy_file () ;;
 print_endline "read_ocamlpy_file done\r\n";;
 delay 5000;;
 
-display_push_allscreen_uniform color_black;;
-display_draw_string_small content_of_ocamlpy_file 0 0;;
-delay 10000;;
+(* display_push_allscreen_uniform color_black;; *)
+(* display_draw_string_small content_of_ocamlpy_file 0 0;; *)
+(* delay 10000;; *)
 
 display_push_allscreen_uniform color_blue;;
-display_draw_string_small (String.make 10000 'X') 0 0;;
+display_draw_string_small (String.make 50 'X') 0 0;;
 delay 10000;;
 
 
@@ -109,7 +109,7 @@ let main () =
 
   delay 1000;
   print_endline "Loop #3.";
-  let max_n = 40 in
+  let max_n = 20 in
   for n = 0 to max_n do
     print_string "fibonacci "; print_int n; print_string " = "; print_int (fibonacci n);
     print_newline();
@@ -121,13 +121,7 @@ let main () =
   let delta_y = 18 in
   for i = 1 to 12 do
     let x = i and y = delta_y * i in
-    let text =
-      "draw at {"
-      ^ (string_of_int x)
-      ^ ", "
-      ^ (string_of_int y)
-      ^ "}"
-    in
+    let text = "draw at {" ^ (string_of_int x) ^ ", " ^ (string_of_int y) ^ "}" in
     display_draw_string text x y ;
     delay 250;
   done;
@@ -136,33 +130,33 @@ let main () =
   let small_delta_y = 10 in
   for i = 1 to 23 do
     let x = i and y = small_delta_y * i in
-    let text =
-      "draw small at {"
-      ^ (string_of_int x)
-      ^ ", "
-      ^ (string_of_int y)
-      ^ "}"
-    in
+    let text = "draw small at {" ^ (string_of_int x) ^ ", " ^ (string_of_int y) ^ "}" in
     display_draw_string_small text x y ;
     delay 250;
   done;
   delay 1000;
 
   (* FIXME: this test breaks my calculator, it makes it RESET completely! *)
-  (* let delta_y = 18 in
-  for i = 1 to 12 do
-    let x = delta_y * i and y = delta_y * i in
-    let text =
-      "draw red/blue at {"
-      ^ (string_of_int x)
-      ^ ", "
-      ^ (string_of_int y)
-      ^ "}"
-    in
-    display_draw_string_full text x y false color_red color_blue ;
-    delay 250;
+  let array_colors = [| color_black; color_white; color_red; color_green; color_blue |] in
+  let array_name_colors = [| "black"; "white"; "red"; "green"; "blue" |] in
+  let nb_colors = Array.length array_colors in
+
+  for color1 = 0 to nb_colors-1 do
+    for color2 = 0 to nb_colors-1 do
+      for i = 1 to 12 do
+        let x = 0 and y = delta_y * i in
+        let text = "draw " ^ (array_name_colors.(color1)) ^"/" ^ (array_name_colors.(color2)) ^ " at {" ^ (string_of_int x) ^ "," ^ (string_of_int y) ^ "}" in
+        print_endline text;
+        delay 1000;
+        (* FIXME: this test breaks my calculator, it makes it RESET completely! *)
+        display_draw_string_full text x y true array_colors.(color1) array_colors.(color2) ;
+        delay 1000;
+      done;
+      delay 2000;
+    done;
+    delay 200;
   done;
-  delay 1000; *)
+  delay 1000;
 
   print_string "Done for all the tests.";
   delay 1000;
