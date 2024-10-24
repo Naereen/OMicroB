@@ -2,7 +2,7 @@
     Modified in 2024, in order to:
     - not use camlp4,
     - not depend on CLI Arguments, files and interactivity,
-    - TODO: remove/inline dependencies on Genlex
+    - remove/inline dependencies on Genlex
 
     (C) 2020-2024 Lilian Besson
     MIT License, https://lbesson.mit-license.org/
@@ -188,7 +188,7 @@ let filter_out_comments list_of_strings =
 let parse_progs lis = List.fold_left parse_prog [] lis *)
 
 let parse_string acc str =
-  (* TODO: when there are comments, everything fails *)
+  (* TODO: when there are comments, everything fails, so we remove them later in the main program *)
   let flx4 = Mystream.of_string str in
   parse_prog_parser acc (lex flx4)
 
@@ -356,8 +356,8 @@ ishuntedby(C, D)."
 let default_questions = filter_out_comments (String.split_on_char '\n' !default_questions)
 
 let numworks_main () =
-  let long_delay = 3_000 in
-  let short_delay = 500 in
+  let long_delay = 1000 in
+  let short_delay = 0 in
   let delta_y = 18 in
   delay short_delay;
   clear_screen ();
