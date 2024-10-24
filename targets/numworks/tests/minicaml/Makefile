@@ -1,17 +1,16 @@
 include ../../../../etc/Makefile.conf
 
-PROG = prolog
-EADK_APP_NAME = OCaml-Prolog
+PROG = minicaml
+EADK_APP_NAME = OCaml-MiniCaml
 DEVICE ?= numworks
 
-# FIXME: my examples of recursive functions broke quite quickly, do they perform better with an increased STACK_SIZE and HEAP_SIZE ?
-STACK_SIZE = 2048
-HEAP_SIZE = 8192
+# FIXME: find what is the upper limit for these?
+STACK_SIZE = 65536
+HEAP_SIZE = 65536
 
 TARGETS := $(PROG).hex
 
 OCAMLOPT = ocamlopt.opt
-OCAMLC = ocamlc.opt
 
 .PHONY: all
 all: $(TARGETS)
@@ -22,22 +21,18 @@ $(TARGETS): mystream.mli mystream.ml mygenlex.mli mygenlex.ml $(PROG).ml
 	$(BIN)/omicrob -v -stack-size $(STACK_SIZE) -heap-size $(HEAP_SIZE) -cxxopt=-DEADK_APP_NAME=$(EADK_APP_NAME) -mlopt=-ccopt=-DEADK_APP_NAME=$(EADK_APP_NAME) -device=$(DEVICE) $^ -o $@
 
 
-
-$(PROG).exe:	$(PROG).ml
+mmli.exe:	mml.ml interpreter.ml typechecker.ml mmlparser.mli mmlparser.ml mmllexer.ml mmli.ml
 	@echo "OCAMLOPT $<"
-	$(OCAMLOPT) -c mystream.mli
-	$(OCAMLOPT) -c mystream.ml
-	$(OCAMLOPT) -c mygenlex.mli
-	$(OCAMLOPT) -c mygenlex.ml
-	$(OCAMLOPT) -o $@ mygenlex.cmx $^
-	# To test what was produced:
-	./$@
+	$(OCAMLOPT) -c mml.ml
+	$(OCAMLOPT) -c interpreter.ml
+	$(OCAMLOPT) -c typechecker.ml
 
-$(PROG).bytecode:	$(PROG).ml mygenlex.ml
-	@echo "OCAMLC $<"
-	$(OCAMLC) -c mygenlex.mli
-	$(OCAMLC) -c mygenlex.ml
-	$(OCAMLC) -o $@ mygenlex.cmo $^
+# 	TODO: remove dependencies on modules not included in the stdlib of OMicroB
+	$(OCAMLOPT) -c mmlparser.mli
+	$(OCAMLOPT) -c mmlparser.ml
+	$(OCAMLOPT) -c mmllexer.ml
+
+	$(OCAMLOPT) -o $@ mml.cmx interpreter.cmx typechecker.cmx mmlparser.cmx mmllexer.cmx mmli.ml
 	# To test what was produced:
 	./$@
 
