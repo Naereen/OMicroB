@@ -16,21 +16,34 @@ OCAMLOPT = ocamlopt.opt
 all: $(TARGETS)
 	cp -vf $(PROG).hex $(PROG).nwa
 
-$(TARGETS): mystream.mli mystream.ml mygenlex.mli mygenlex.ml $(PROG).ml
+$(TARGETS): mml.ml interpreter.ml typechecker.ml mylexing.mli mylexing.ml mmlparser.mli mmlparser.ml mmllexer.ml minicaml.ml
 	@echo "omicrob $<"
 	$(BIN)/omicrob -v -stack-size $(STACK_SIZE) -heap-size $(HEAP_SIZE) -cxxopt=-DEADK_APP_NAME=$(EADK_APP_NAME) -mlopt=-ccopt=-DEADK_APP_NAME=$(EADK_APP_NAME) -device=$(DEVICE) $^ -o $@
 
+
+minicaml.exe:	mml.ml interpreter.ml typechecker.ml mylexing.mli mylexing.ml mmlparser.mli mmlparser.ml mmllexer.ml minicaml.ml
+	@echo "OCAMLOPT $<"
+	$(OCAMLOPT) -c mml.ml
+	$(OCAMLOPT) -c interpreter.ml
+	$(OCAMLOPT) -c typechecker.ml
+	$(OCAMLOPT) -c mylexing.mli
+	$(OCAMLOPT) -c mylexing.ml
+	$(OCAMLOPT) -c mmlparser.mli
+	$(OCAMLOPT) -c mmlparser.ml
+	$(OCAMLOPT) -c mmllexer.ml
+
+	$(OCAMLOPT) -o $@ mml.cmx interpreter.cmx typechecker.cmx mylexing.cmx mmlparser.cmx mmllexer.cmx minicaml.ml
+	# To test what was produced:
+	./minicaml.exe
+	@echo "That test should print 832040."
 
 mmli.exe:	mml.ml interpreter.ml typechecker.ml mylexing.mli mylexing.ml mmlparser.mli mmlparser.ml mmllexer.ml mmli.ml
 	@echo "OCAMLOPT $<"
 	$(OCAMLOPT) -c mml.ml
 	$(OCAMLOPT) -c interpreter.ml
 	$(OCAMLOPT) -c typechecker.ml
-
-# 	TODO: remove dependencies on module Lexing not included in the stdlib of OMicroB
 	$(OCAMLOPT) -c mylexing.mli
 	$(OCAMLOPT) -c mylexing.ml
-
 	$(OCAMLOPT) -c mmlparser.mli
 	$(OCAMLOPT) -c mmlparser.ml
 	$(OCAMLOPT) -c mmllexer.ml
