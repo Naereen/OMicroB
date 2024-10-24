@@ -30,13 +30,13 @@ delay 3000;;
 let clear_screen () = display_push_allscreen_uniform color_black;;
 clear_screen ();;
 
-print_endline "open Genlex...";;
-open Genlex;;
-delay 25000;;
+(* print_endline "open Genlex...";; *)
+(* open Genlex;; *)
+(* delay 25000;; *)
 
-print_endline "open Printf...";;
-open Printf;;
-delay 25000;;
+(* print_endline "open Printf...";; *)
+(* open Printf;; *)
+(* delay 25000;; *)
 
 (* Examples of OCaml basic code *)
 let rec fact n =
