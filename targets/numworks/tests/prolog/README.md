@@ -5,7 +5,7 @@
 
 This folder contains [the code](prolog.ml), embeds one of the [examples](https://github.com/Naereen/Tiny-Prolog-in-OCaml-OneFile/tree/master/examples) I wrote in 2018/2020, for a tiny [Prolog](https://en.wikipedia.org/wiki/Prolog) implementation, written in [the OCaml language](https://ocaml.org/).
 
-- See [this file `prolog.ml`](prolog.ml) for instructions to build the project (really easy: clone, run `make`, relax and enjoy :tada:). The implementation focuses on a very small subset of Prolog, see the examples for a good idea of what is supported.
+To build the project, it should be really easy: clone, run `make`, relax and enjoy :tada:. The implementation focuses on a very small subset of Prolog, see the examples for a good idea of what is supported.
 
 ## How to build the NWA Numworks app
 
@@ -17,13 +17,17 @@ $ make
 ```
 This should create the `prolog.nwa` app, which you can then [install on your Numworks calculator](https://my.numworks.com/apps).
 
-## TODO: support user defined theory/questions
-> TODO: By default, the app runs the example below of Tom & Jerry, but you can define two files `prolog_theory.py` for the theory, and `prolog_questions.py` for the questions.
+## It now supports user defined theory/questions
+> By default, the app runs the example below of Tom & Jerry, but you can define two files `prolog_theory.py` for the theory, and `prolog_questions.py` for the questions.
 
 See my two files on [my user space on Numworks.com](https://my.numworks.com/python/lilian-besson-1/):
 
 - Defining the "Tom & Jerry" theory: <https://my.numworks.com/python/lilian-besson-1/prolog_theory>
 - three questions to ask to this "Tom & Jerry" theory: <https://my.numworks.com/python/lilian-besson-1/prolog_questions>
+
+----
+
+# **Old documentation**
 
 ## Example of use of the `prolog` binary
 - A theory has this form, first with axioms (predicate):
@@ -75,7 +79,7 @@ istrickedby(X, Y) <-- cat(X), mouse(Y).
 
 ## More examples ?
 
-- See [this folder]([examples/](https://github.com/Naereen/Tiny-Prolog-in-OCaml-OneFile/tree/master/examples)).
+- See [this folder](examples/).
 
 ---
 
