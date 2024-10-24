@@ -50,89 +50,89 @@ let print_clause cl =
 
 let lex = Mygenlex.make_lexer [ "<--"; ":-"; "("; ")"; ","; "." ]
 
-let rec parse_term1 (__strm : _ Stream.t) =
-  match Stream.peek __strm with
+let rec parse_term1 (__strm : _ Mystream.t) =
+  match Mystream.peek __strm with
   | Some (Mygenlex.Ident f) ->
-      (Stream.junk __strm;
+      (Mystream.junk __strm;
        (try parse_term2 f __strm
-        with | Stream.Failure -> raise (Stream.Error "")))
-  | _ -> raise Stream.Failure
-and parse_term2 f (__strm : _ Stream.t) =
-  match Stream.peek __strm with
+        with | Mystream.Failure -> raise (Mystream.Error "")))
+  | _ -> raise Mystream.Failure
+and parse_term2 f (__strm : _ Mystream.t) =
+  match Mystream.peek __strm with
   | Some (Mygenlex.Kwd "(") ->
-      (Stream.junk __strm;
+      (Mystream.junk __strm;
        let t1 =
          (try parse_term1 __strm
-          with | Stream.Failure -> raise (Stream.Error "")) in
+          with | Mystream.Failure -> raise (Mystream.Error "")) in
        let l =
          (try parse_term_list __strm
-          with | Stream.Failure -> raise (Stream.Error ""))
+          with | Mystream.Failure -> raise (Mystream.Error ""))
        in
-         (match Stream.peek __strm with
-          | Some (Mygenlex.Kwd ")") -> (Stream.junk __strm; Term (f, (t1 :: l)))
-          | _ -> raise (Stream.Error "")))
+         (match Mystream.peek __strm with
+          | Some (Mygenlex.Kwd ")") -> (Mystream.junk __strm; Term (f, (t1 :: l)))
+          | _ -> raise (Mystream.Error "")))
   | _ -> (match f.[0] with | 'A' .. 'Z' -> Var f | _ -> Term (f, []))
-and parse_term_list (__strm : _ Stream.t) =
-  match Stream.peek __strm with
+and parse_term_list (__strm : _ Mystream.t) =
+  match Mystream.peek __strm with
   | Some (Mygenlex.Kwd ",") ->
-      (Stream.junk __strm;
+      (Mystream.junk __strm;
        let t1 =
          (try parse_term1 __strm
-          with | Stream.Failure -> raise (Stream.Error "")) in
+          with | Mystream.Failure -> raise (Mystream.Error "")) in
        let l =
          (try parse_term_list __strm
-          with | Stream.Failure -> raise (Stream.Error ""))
+          with | Mystream.Failure -> raise (Mystream.Error ""))
        in t1 :: l)
   | _ -> []
 
-let parse_goal1 (__strm : _ Stream.t) =
+let parse_goal1 (__strm : _ Mystream.t) =
   let t1 = parse_term1 __strm in
   let l =
     try parse_term_list __strm
-    with | Stream.Failure -> raise (Stream.Error "")
+    with | Mystream.Failure -> raise (Mystream.Error "")
   in t1 :: l
 
-let parse_term s = parse_term1 (lex (Stream.of_string s))
+let parse_term s = parse_term1 (lex (Mystream.of_string s))
 
-let parse_goal s = parse_goal1 (lex (Stream.of_string s))
+let parse_goal s = parse_goal1 (lex (Mystream.of_string s))
 
-let rec parse_clause1 (__strm : _ Stream.t) =
+let rec parse_clause1 (__strm : _ Mystream.t) =
   let t = parse_term1 __strm
   in
     try parse_clause2 t __strm
-    with | Stream.Failure -> raise (Stream.Error "")
-and parse_clause2 t (__strm : _ Stream.t) =
-  match Stream.peek __strm with
-  | Some (Mygenlex.Kwd ".") -> (Stream.junk __strm; { pos = t; neg = []; })
+    with | Mystream.Failure -> raise (Mystream.Error "")
+and parse_clause2 t (__strm : _ Mystream.t) =
+  match Mystream.peek __strm with
+  | Some (Mygenlex.Kwd ".") -> (Mystream.junk __strm; { pos = t; neg = []; })
   | Some (Mygenlex.Kwd ":-") ->
-      (Stream.junk __strm;
+      (Mystream.junk __strm;
        let t1 =
          (try parse_term1 __strm
-          with | Stream.Failure -> raise (Stream.Error "")) in
+          with | Mystream.Failure -> raise (Mystream.Error "")) in
        let l =
          (try parse_term_list __strm
-          with | Stream.Failure -> raise (Stream.Error ""))
+          with | Mystream.Failure -> raise (Mystream.Error ""))
        in
-         (match Stream.peek __strm with
+         (match Mystream.peek __strm with
           | Some (Mygenlex.Kwd ".") ->
-              (Stream.junk __strm; { pos = t; neg = t1 :: l; })
-          | _ -> raise (Stream.Error "")))
+              (Mystream.junk __strm; { pos = t; neg = t1 :: l; })
+          | _ -> raise (Mystream.Error "")))
   | Some (Mygenlex.Kwd "<--") ->
-      (Stream.junk __strm;
+      (Mystream.junk __strm;
        let t1 =
          (try parse_term1 __strm
-          with | Stream.Failure -> raise (Stream.Error "")) in
+          with | Mystream.Failure -> raise (Mystream.Error "")) in
        let l =
          (try parse_term_list __strm
-          with | Stream.Failure -> raise (Stream.Error ""))
+          with | Mystream.Failure -> raise (Mystream.Error ""))
        in
-         (match Stream.peek __strm with
+         (match Mystream.peek __strm with
           | Some (Mygenlex.Kwd ".") ->
-              (Stream.junk __strm; { pos = t; neg = t1 :: l; })
-          | _ -> raise (Stream.Error "")))
-  | _ -> raise Stream.Failure
+              (Mystream.junk __strm; { pos = t; neg = t1 :: l; })
+          | _ -> raise (Mystream.Error "")))
+  | _ -> raise Mystream.Failure
 
-let parse_clause s = parse_clause1 (lex (Stream.of_string s))
+let parse_clause s = parse_clause1 (lex (Mystream.of_string s))
 
 let print_subst l =
   let rec aux =
@@ -146,14 +146,16 @@ let print_subst l =
     | (x, t) :: q ->
       "{ " ^ x ^ " = " ^ (print_terme t) ^ (aux q) ^ " }"
 
-let rec parse_prog_parser acc (__strm : _ Stream.t) =
-  match try Some (parse_clause1 __strm) with | Stream.Failure -> None with
+let rec parse_prog_parser acc (__strm : _ Mystream.t) =
+  match try Some (parse_clause1 __strm) with | Mystream.Failure -> None with
   | Some cl ->
       let res =
         (try parse_prog_parser acc __strm
-         with | Stream.Failure -> raise (Stream.Error ""))
+         with | Mystream.Failure -> raise (Mystream.Error ""))
       in cl :: res
   | _ -> acc
+
+(* let input_line _ = "FIXME: input_channel not implemented"
 
 let rec read_all_lines_rec acc filter input_channel =
   try
@@ -167,24 +169,24 @@ let rec read_all_lines_rec acc filter input_channel =
 let read_all_lines filter input_channel =
   read_all_lines_rec [] filter input_channel
 
-let is_not_comment s = not (String.contains s '#')
+let is_not_comment s = not (String.contains s '#') *)
 
-let parse_prog acc f =
+(* let parse_prog acc f =
   let file = open_in f in
-  (* let flx = Stream.of_channel file in
+  (* let flx = Mystream.of_channel file in
   parse_prog_parser acc (lex flx) *)
   (* hack to open the file, read, remove lines starting with #? *)
   let lines = read_all_lines is_not_comment file in
   let one_huge_line = ref ""
   in
     (List.iter (fun line -> one_huge_line := !one_huge_line ^ line) lines;
-     let flx3 = Stream.of_string !one_huge_line
+     let flx3 = Mystream.of_string !one_huge_line
      in parse_prog_parser acc (lex flx3))
 
-let parse_progs lis = List.fold_left parse_prog [] lis
+let parse_progs lis = List.fold_left parse_prog [] lis *)
 
 let parse_string acc str =
-  let flx4 = Stream.of_string str in
+  let flx4 = Mystream.of_string str in
   parse_prog_parser acc (lex flx4)
 
 let parse_strings strs = List.fold_left parse_string [] strs
@@ -329,7 +331,7 @@ let default_main() =
     prove_goals ~interactive:false prog trm_list
   ) default_questions
 
-let interactive_main () =
+(* let interactive_main () =
   let nbarg = Array.length Sys.argv in
   let listargv = List.tl (Array.to_list Sys.argv)
   in
@@ -351,7 +353,9 @@ let interactive_main () =
            (print_string "?- ";
             let trm_list = parse_goal (read_line ())
             in prove_goals ~interactive:true prog trm_list))
-    else ()
+    else () *)
+(* TODO: add interactivity ? at least read the content of the "prolog.py" file, on the Numworks *)
+let interactive_main = default_main
 
 let interactive = false ;;
 

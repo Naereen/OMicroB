@@ -13,6 +13,21 @@
 (*                                                                        *)
 (**************************************************************************)
 
+type in_channel
+external bytes_length : bytes -> int = "%bytes_length"
+(* external unsafe_input : in_channel -> bytes -> int -> int -> int = "caml_ml_input" *)
+
+
+let input ic s ofs len =
+  if ofs < 0 || len < 0 || ofs > bytes_length s - len
+  then
+    invalid_arg "input"
+  else
+    (* unsafe_input ic s ofs len *)
+    (* FIXME: unsafe_input is unavailable for the Numworks libraries *)
+    len
+
+
 type 'a t = 'a cell option
 and 'a cell = { mutable count : int; mutable data : 'a data }
 and 'a data =
@@ -37,7 +52,8 @@ let data = function
   | Some { data } -> data
 
 let fill_buff b =
-  b.len <- input b.ic b.buff 0 (Bytes.length b.buff); b.ind <- 0
+  b.len <- input b.ic b.buff 0 (Bytes.length b.buff);
+  b.ind <- 0
 
 
 let rec get_data : type v. int -> v data -> v data = fun count d -> match d with
@@ -198,14 +214,14 @@ let iapp i s = Some {count = 0; data = Sapp (data i, data s)}
 let icons i s = Some {count = 0; data = Scons (i, data s)}
 let ising i = Some {count = 0; data = Scons (i, Sempty)}
 
-let lapp f s =
-  Some {count = 0; data = Slazy (lazy(Sapp (data (f ()), data s)))}
+(* let lapp f s =
+  Some {count = 0; data = Slazy (lazy(Sapp (data (f ()), data s)))} *)
 
-let lcons f s = Some {count = 0; data = Slazy (lazy(Scons (f (), data s)))}
-let lsing f = Some {count = 0; data = Slazy (lazy(Scons (f (), Sempty)))}
+(* let lcons f s = Some {count = 0; data = Slazy (lazy(Scons (f (), data s)))} *)
+(* let lsing f = Some {count = 0; data = Slazy (lazy(Scons (f (), Sempty)))} *)
 
-let sempty = None
-let slazy f = Some {count = 0; data = Slazy (lazy(data (f ())))}
+(* let sempty = None *)
+(* let slazy f = Some {count = 0; data = Slazy (lazy(data (f ())))} *)
 
 (* For debugging use *)
 
@@ -231,6 +247,6 @@ and dump_data : type v. (v -> unit) -> v data -> unit = fun f ->
       print_string ", ";
       dump_data f d2;
       print_string ")"
-  | Slazy _ -> print_string "Slazy"
+  (* | Slazy _ -> print_string "Slazy" *)
   | Sgen _ -> print_string "Sgen"
   | Sbuffio _ -> print_string "Sbuffio"
