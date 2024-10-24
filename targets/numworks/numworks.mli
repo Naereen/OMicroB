@@ -44,6 +44,7 @@ val display_draw_string_full : string -> int -> int -> bool -> int -> int -> uni
 
 val display_push_allscreen_uniform : int -> unit
 val clear_screen : unit -> unit
+val clear_black_screen : unit -> unit
 
 (*******************)
 (* Storage library *)

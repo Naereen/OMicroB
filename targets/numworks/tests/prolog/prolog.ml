@@ -336,10 +336,12 @@ let numworks_main () =
   delay delay_secs;
 
   List.iter (fun question ->
-    print_string ("\n?- " ^ question ^ "\n");
+    print_endline ("?- " ^ question ^ "\n");
+    delay delay_secs;
     let trm_list = parse_goal question in
     prove_goals ~interactive:false prog trm_list;
-    delay delay_secs; clear_screen()
+    delay delay_secs;
+    clear_screen()
   ) default_questions
 
 (* let interactive_main () =
