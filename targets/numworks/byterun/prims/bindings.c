@@ -189,21 +189,19 @@ value caml_read_any_file(value v) {
     delay(5000);
 
     #ifdef __OCAML__
-    return caml_copy_string("");
+    return (value)caml_copy_string("");
     #else
-    // return (value)("");
     const char * fake_content = "";
-    return copy_bytes(fake_content);
+    return (value)copy_bytes(fake_content);
     #endif
   }
 
   // The file is found, so we return his content (content + 1 is for the autoimport status), converted to a value
   // Create a new OCaml string, using caml_copy_string(char* s), see https://ocaml.org/manual/5.2/intfc.html#ss:c-block-allocation
   #ifdef __OCAML__
-  return caml_copy_string(content + 1);
+  return (value)caml_copy_string(content + 1);
   #else
-  // return (value)(content + 1);
-  return copy_bytes(content + 1);
+  return (value)copy_bytes(content + 1);
   #endif
 }
 
