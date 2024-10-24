@@ -191,7 +191,9 @@ value caml_read_any_file(value v) {
     #ifdef __OCAML__
     return caml_copy_string("");
     #else
-    return (value)("");
+    // return (value)("");
+    const char * fake_content = "";
+    return copy_bytes(fake_content);
     #endif
   }
 
@@ -200,7 +202,8 @@ value caml_read_any_file(value v) {
   #ifdef __OCAML__
   return caml_copy_string(content + 1);
   #else
-  return (value)(content + 1);
+  // return (value)(content + 1);
+  return copy_bytes(content + 1);
   #endif
 }
 

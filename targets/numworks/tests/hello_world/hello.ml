@@ -14,27 +14,20 @@ print_endline "cat_ocamlpy_file done";;
 delay 3000;;
 clear_screen();;
 
-(* (* TODO: read from C and return a OCaml string *) *)
-(* print_endline "read_ocamlpy_file...\r\n";; *)
-(* let content_of_ocamlpy_file : string = read_ocamlpy_file () ;; *)
-(* print_endline "read_ocamlpy_file done\r\n";; *)
-(* delay 5000;; *)
+(* TODO: read from C and return a OCaml string *)
+print_endline "read_ocamlpy_file...\r\n";;
+let content_of_ocamlpy_file : string = read_ocamlpy_file () ;;
+print_endline "read_ocamlpy_file done\r\n";;
+delay 5000;;
 
-(* display_push_allscreen_uniform color_black;; *)
-(* display_draw_string_small content_of_ocamlpy_file 0 0;; *)
-(* delay 10000;; *)
+display_push_allscreen_uniform color_blue;;
+display_draw_string_small content_of_ocamlpy_file 0 0;;
+delay 10000;;
 
 (* display_push_allscreen_uniform color_blue;; *)
 (* display_draw_string_small (String.make 50 'X') 0 0;; *)
 (* delay 10000;; *)
 
-(* print_endline "open Genlex...";; *)
-(* open Genlex;; *)
-(* delay 25000;; *)
-
-(* print_endline "open Printf...";; *)
-(* open Printf;; *)
-(* delay 25000;; *)
 
 (* Examples of OCaml basic code *)
 let rec fact n =
@@ -42,9 +35,9 @@ let rec fact n =
   else n * fact(n-1)
 ;;
 
-let rec fibonacci n =
+let rec fibonacci_rec n =
   if n <= 1 then n
-  else fibonacci (n-1) + fibonacci (n-2)
+  else fibonacci_rec (n-1) + fibonacci_rec (n-2)
 ;;
 
 
@@ -115,10 +108,10 @@ let main () =
 
   delay 1000; clear_screen ();
   print_endline "Loop #3.";
-  (* FIXME: fibonacci fails VERY quickly, I guess the stack size for recursive function is VERY LIMITED? *)
+  (* FIXME: fibonacci_rec fails VERY quickly, I guess the stack size for recursive function is VERY LIMITED? *)
   let max_n = 30 in
   for n = 0 to max_n do
-    print_string "fibonacci "; print_int n; print_string " = "; print_int (fibonacci n);
+    print_string "fibonacci_rec "; print_int n; print_string " = "; print_int (fibonacci_rec n);
     print_newline();
     delay 100;
   done;
@@ -176,4 +169,4 @@ let main () =
   delay 1000;
 ;;
 
-main ();;
+(* main ();; *)
