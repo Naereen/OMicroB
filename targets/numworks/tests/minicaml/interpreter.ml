@@ -17,15 +17,31 @@ type heap_value =
  | VClos of string * expr * value Env.t
  | VStrct of (string, value) Hashtbl.t
 
-let print_bool b =
-  if b then print_string "true"
-  else print_string "false"
+let string_of_bool b =
+  if b then "true"
+  else "false"
 
 let print_value = function
  | VInt n -> print_int n; print_newline ()
- | VBool b -> print_bool b; print_newline ()
+ | VBool b -> print_string (string_of_bool b); print_newline ()
  | VUnit -> print_string "()"; print_newline ()
  | VPtr p -> print_string "@"; print_int p; print_newline ()
+
+
+(* FIXME: remove this FAKE implementation when compiling for the Numworks *)
+(* let display_draw_string s x y = print_endline s *)
+
+ let draw_string v (x:int) (y:int) : unit =
+  match v with
+  | VInt n ->
+    display_draw_string (string_of_int n) x y
+  | VBool b ->
+    display_draw_string (string_of_bool b) x y
+  | VUnit ->
+    display_draw_string "()" x y
+  | VPtr p ->
+    display_draw_string ("@" ^ (string_of_int p)) x y
+
 
 (* Interprétation d'un programme complet *)
 let eval_prog (p: prog): value =

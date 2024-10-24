@@ -1,26 +1,30 @@
 (* Interprète MML pour la Numworks *)
 
+(* (* FIXME: remove this FAKE implementation when compiling for the Numworks *) *)
+(* let read_any_file filename = "" *)
+(* let delay _ = () *)
+(* let clear_screen () = () *)
+(* let display_draw_string s x y = print_endline s *)
+
 open Mylexing
 
 let long_delay = 5000
 let short_delay = 500
 let delta_y = 18
+let exit (code:int) = ()
 
 let usage = "usage: ./minicaml filename.mml"
 
 let spec = []
 
 (* FIXME: use EADK Numworks to read the content of a filename on the Numworks. *)
-let filename = "minicaml.py"
+let filename = "minicaml.py";;
 
 delay short_delay;;
 clear_screen ();;
 delay short_delay;;
 display_draw_string ("Loading code from " ^ filename ^ " ...") 0 0;;
 delay long_delay;;
-
-(* FIXME: remove this FAKE implementation when compiling for the Numworks *)
-(* let read_any_file filename = "" *)
 
 (* DONE: this is now read from a 'filename' file, from the local storage *)
 let minicaml_file_content = read_any_file filename
@@ -54,11 +58,13 @@ let () =
 
     let type_of_prog = Typechecker.type_prog prog in
     display_draw_string "Type of the program: " 0 delta_y;
-    display_draw_string typ_to_string 0 (2*delta_y);
+    display_draw_string (Mml.typ_to_string type_of_prog) 0 (2*delta_y);
     delay short_delay;
 
+    display_draw_string "Evaluation of the program: " 0 (3*delta_y);
+    delay short_delay;
     let v = Interpreter.eval_prog prog in
-    Interpreter.print_value v;
+    Interpreter.draw_string v 0 (4*delta_y);
     delay short_delay;
     clear_screen ();
     delay long_delay;
@@ -77,5 +83,6 @@ let () =
      exit 1
   | e ->
   (* FIXME: remove this dependency on Printexc. module *)
-     print_endline ("Anomaly: " ^ (Printexc.to_string e));
+     (* print_endline ("Anomaly: " ^ (Printexc.to_string e)); *)
+     print_endline ("Anomaly: (some exception)");
      exit 2

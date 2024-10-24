@@ -89,7 +89,7 @@ type lexbuf =
    of line -- see also [new_line]).
 *)
 
-val from_channel : ?with_positions:bool -> in_channel -> lexbuf
+(* val from_channel : ?with_positions:bool -> in_channel -> lexbuf *)
 (** Create a lexer buffer on the given input channel.
    [Lexing.from_channel inchan] returns a lexer buffer which reads
    from the input channel [inchan], at the current reading position. *)

@@ -107,7 +107,7 @@ let lex_refill read_fun aux_buffer lexbuf =
          space since n <= String.length aux_buffer <= String.length buffer.
          Watch out for string length overflow, though. *)
       let newlen =
-        Int.min (2 * Bytes.length lexbuf.lex_buffer) Sys.max_string_length in
+        min (2 * Bytes.length lexbuf.lex_buffer) Sys.max_string_length in
       if lexbuf.lex_buffer_len - lexbuf.lex_start_pos + n > newlen
       then failwith "Lexing.lex_refill: cannot grow buffer";
       let newbuf = Bytes.create newlen in
@@ -158,8 +158,8 @@ let from_function ?(with_positions = true) f =
     lex_curr_p = if with_positions then zero_pos else dummy_pos;
   }
 
-let from_channel ?with_positions ic =
-  from_function ?with_positions (fun buf n -> input ic buf 0 n)
+(* let from_channel ?with_positions ic =
+  from_function ?with_positions (fun buf n -> input ic buf 0 n) *)
 
 let from_string ?(with_positions = true) s =
   { refill_buff = (fun lexbuf -> lexbuf.lex_eof_reached <- true);
