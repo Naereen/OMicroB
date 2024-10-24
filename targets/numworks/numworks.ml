@@ -74,9 +74,9 @@ external backlight_brightness : unit -> int = "caml_backlight_brightness" [@@noa
 (* Battery *)
 (***********)
 
-external battery_is_charging : unit -> bool = "caml_battery_is_charging" [@@noalloc]
-external battery_level : unit -> int = "caml_battery_level" [@@noalloc]
-external battery_voltage : unit -> float = "caml_battery_voltage" [@@noalloc]
+(* external battery_is_charging : unit -> bool = "caml_battery_is_charging" [@@noalloc] *)
+(* external battery_level : unit -> int = "caml_battery_level" [@@noalloc] *)
+(* external battery_voltage : unit -> float = "caml_battery_voltage" [@@noalloc] *)
 
 
 (********)
@@ -84,7 +84,7 @@ external battery_voltage : unit -> float = "caml_battery_voltage" [@@noalloc]
 (********)
 
 external random : unit -> int = "caml_random" [@@noalloc]
-external usb_is_plugged : unit -> bool = "caml_usb_is_plugged" [@@noalloc]
+(* external usb_is_plugged : unit -> bool = "caml_usb_is_plugged" [@@noalloc] *)
 
 (*******************)
 (* Storage library *)

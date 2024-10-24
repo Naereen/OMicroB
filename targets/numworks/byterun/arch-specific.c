@@ -229,13 +229,13 @@ uint8_t backlight_brightness() { return eadk_backlight_brightness(); }
 /* Battery */
 /***********/
 
-bool battery_is_charging() { return eadk_battery_is_charging(); }
-uint8_t battery_level() { return eadk_battery_level(); }
-float battery_voltage() { return eadk_battery_voltage(); }
+// bool battery_is_charging() { return eadk_battery_is_charging(); }
+// uint8_t battery_level() { return eadk_battery_level(); }
+// float battery_voltage() { return eadk_battery_voltage(); }
 
 /********/
 /* Misc */
 /********/
 
-bool usb_is_plugged() { return eadk_usb_is_plugged(); }
+// bool usb_is_plugged() { return eadk_usb_is_plugged(); }
 uint32_t random() { return eadk_random(); }

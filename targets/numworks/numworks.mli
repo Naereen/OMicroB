@@ -59,9 +59,9 @@ val backlight_brightness : unit -> int
 (* Battery *)
 (***********)
 
-val battery_is_charging : unit -> bool
-val battery_level : unit -> int
-val battery_voltage : unit -> float
+(* val battery_is_charging : unit -> bool *)
+(* val battery_level : unit -> int *)
+(* val battery_voltage : unit -> float *)
 
 
 (********)
@@ -69,7 +69,7 @@ val battery_voltage : unit -> float
 (********)
 
 val random : unit -> int
-val usb_is_plugged : unit -> bool
+(* val usb_is_plugged : unit -> bool *)
 
 (*******************)
 (* Storage library *)

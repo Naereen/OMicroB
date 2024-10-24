@@ -140,20 +140,22 @@ value caml_backlight_brightness(value unit) {
 /* Battery */
 /***********/
 
-value caml_battery_is_charging(value unit) {
-  return Val_bool(battery_is_charging());
-}
-value caml_battery_level(value unit) {
-  return Val_int(battery_level());
-}
-value caml_battery_voltage(value unit) {
-  double bv = battery_voltage();
-  value result;
-  * (double*) result = bv;
-  // Store_double_val(result, bv);
-  return result;
-  // return Val_double(battery_voltage());  // FIXME: Val_double is unavailable?
-}
+// value caml_battery_is_charging(value unit) {
+//   return Val_bool(battery_is_charging());
+// }
+
+// value caml_battery_level(value unit) {
+//   return Val_int(battery_level());
+// }
+
+// value caml_battery_voltage(value unit) {
+//   double bv = battery_voltage();
+//   value result;
+//   * (double*) result = bv;
+//   // Store_double_val(result, bv);
+//   return result;
+//   // return Val_double(battery_voltage());  // FIXME: Val_double is unavailable?
+// }
 
 /********/
 /* Misc */
@@ -163,9 +165,9 @@ value caml_random(value unit) {
   return Val_int(random ());
 }
 
-value caml_usb_is_plugged(value unit) {
-  return Val_bool(usb_is_plugged ());
-}
+// value caml_usb_is_plugged(value unit) {
+//   return Val_bool(usb_is_plugged ());
+// }
 
 /******************************************************************************/
 /***************************** Storage.c library ******************************/
