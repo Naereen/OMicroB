@@ -68,7 +68,7 @@ include MenhirBasics
 # 1 "lib/mmlparser.mly"
   
 
- open Lexing
+ open Mylexing
  open Mml
  exception Ident_missing of string 
  let ident_missing s = raise (Ident_missing s)
@@ -1196,7 +1196,7 @@ let _menhir_print_token : token -> string =
 
 let _menhir_fail : unit -> 'a =
   fun () ->
-    Printf.eprintf "Internal failure -- please contact the parser generator's developers.\n%!";
+    print_endline "Internal failure -- please contact the parser generator's developers.";
     assert false
 
 include struct

@@ -1,11 +1,12 @@
 (* Interprète MML *)
 
-open Lexing
+open Mylexing
 
 let usage = "usage: ./mmli file.mml"
 
 let spec = []
 
+(* FIXME: use EADK Numworks to read the content of a file on the Numworks. *)
 let file =
     let file = ref None in
     let set_file s =
@@ -17,14 +18,15 @@ let file =
     match !file with Some f -> f | None -> Arg.usage spec usage; exit 1
 
 let report (b,e) =
-  let l = b.pos_lnum in
+  let lnum = b.pos_lnum in
   let fc = b.pos_cnum - b.pos_bol + 1 in
   let lc = e.pos_cnum - b.pos_bol + 1 in
-  Format.eprintf "File \"%s\", line %d, characters %d-%d:\n" file l fc lc
+  print_endline ("File \"" ^ file ^ "\", line " ^ (string_of_int lnum) ^ ", characters " ^ (string_of_int fc) ^ "-" ^ (string_of_int lc) ^ ":")
 
 let () =
+  (* FIXME: use EADK Numworks to read the content of a file on the Numworks. *)
   let c  = open_in file in
-  let lb = Lexing.from_channel c in
+  let lb = Mylexing.from_channel c in
   try
     let prog = Mmlparser.program Mmllexer.token lb
     in
@@ -36,15 +38,16 @@ let () =
   with
   | Mmllexer.Lexing_error s ->
      report (lexeme_start_p lb, lexeme_end_p lb);
-     Format.eprintf "lexical error: %s@." s;
+     print_endline ("lexical error: " ^ s);
      exit 1
   | Mmlparser.Error ->
      report (lexeme_start_p lb, lexeme_end_p lb);
-     Format.eprintf "syntax error@.";
+     print_endline "syntax error";
      exit 1
   | Typechecker.Type_error s ->
-     Format.eprintf "type error: %s@." s;
+     print_endline ("type error: " ^ s);
      exit 1
   | e ->
-     Format.eprintf "Anomaly: %s\n@." (Printexc.to_string e);
+  (* FIXME: remove this dependency on Printexc. module *)
+     print_endline ("Anomaly: " ^ (Printexc.to_string e));
      exit 2

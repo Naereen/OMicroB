@@ -13,7 +13,7 @@ let rec typ_to_string = function
   | TBool -> "bool"
   | TUnit -> "unit"
   | TFun(typ1, typ2) ->
-     Printf.sprintf "(%s) -> %s" (typ_to_string typ1) (typ_to_string typ2)
+     "(" ^ (typ_to_string typ1) ^ ") -> " ^ (typ_to_string typ2)
   | TStrct s -> s
 
 type uop = Neg | Not
