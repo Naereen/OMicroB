@@ -56,6 +56,8 @@ external display_draw_string_full : string -> int -> int -> bool -> int -> int -
 
 external display_push_allscreen_uniform : int -> unit = "caml_display_push_allscreen_uniform" [@@noalloc]
 
+let clear_screen () = display_push_allscreen_uniform color_black;;
+
 
 (*******************)
 (* Storage library *)

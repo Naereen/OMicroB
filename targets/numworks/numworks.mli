@@ -43,6 +43,7 @@ val display_draw_string_large : string -> int -> int -> unit
 val display_draw_string_full : string -> int -> int -> bool -> int -> int -> unit (* FIXME: it RESETs the calculator! *)
 
 val display_push_allscreen_uniform : int -> unit
+val clear_screen : unit -> unit
 
 (*******************)
 (* Storage library *)

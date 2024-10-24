@@ -8,10 +8,6 @@
     MIT License, https://lbesson.mit-license.org/
 *)
 
-open Genlex
-
-(* open Printf *)
-
 (* lib.ml *)
 let do_list f = List.fold_left (fun a b -> f b) ()
 
@@ -37,7 +33,8 @@ let rec print_terme =
       (match l with
        | [] -> f
        | t :: q ->
-          f ^ "(" (print_terme t) ^ (string_of_terme_list q) ^ ")"
+          f ^ "(" ^ (print_terme t) ^ (string_of_terme_list q) ^ ")"
+      )
 and string_of_terme_list l =
   match l with
   | [] -> ""
@@ -51,18 +48,18 @@ let print_clause cl =
       (* (print_terme cl.pos) ^ " <-- " ^ (print_terme t) ^ (string_of_terme_list q) *)
       (print_terme cl.pos) ^ " :- " ^ (print_terme t) ^ (string_of_terme_list q)
 
-let lex = make_lexer [ "<--"; ":-"; "("; ")"; ","; "." ]
+let lex = Mygenlex.make_lexer [ "<--"; ":-"; "("; ")"; ","; "." ]
 
 let rec parse_term1 (__strm : _ Stream.t) =
   match Stream.peek __strm with
-  | Some (Ident f) ->
+  | Some (Mygenlex.Ident f) ->
       (Stream.junk __strm;
        (try parse_term2 f __strm
         with | Stream.Failure -> raise (Stream.Error "")))
   | _ -> raise Stream.Failure
 and parse_term2 f (__strm : _ Stream.t) =
   match Stream.peek __strm with
-  | Some (Kwd "(") ->
+  | Some (Mygenlex.Kwd "(") ->
       (Stream.junk __strm;
        let t1 =
          (try parse_term1 __strm
@@ -72,12 +69,12 @@ and parse_term2 f (__strm : _ Stream.t) =
           with | Stream.Failure -> raise (Stream.Error ""))
        in
          (match Stream.peek __strm with
-          | Some (Kwd ")") -> (Stream.junk __strm; Term (f, (t1 :: l)))
+          | Some (Mygenlex.Kwd ")") -> (Stream.junk __strm; Term (f, (t1 :: l)))
           | _ -> raise (Stream.Error "")))
   | _ -> (match f.[0] with | 'A' .. 'Z' -> Var f | _ -> Term (f, []))
 and parse_term_list (__strm : _ Stream.t) =
   match Stream.peek __strm with
-  | Some (Kwd ",") ->
+  | Some (Mygenlex.Kwd ",") ->
       (Stream.junk __strm;
        let t1 =
          (try parse_term1 __strm
@@ -106,8 +103,8 @@ let rec parse_clause1 (__strm : _ Stream.t) =
     with | Stream.Failure -> raise (Stream.Error "")
 and parse_clause2 t (__strm : _ Stream.t) =
   match Stream.peek __strm with
-  | Some (Kwd ".") -> (Stream.junk __strm; { pos = t; neg = []; })
-  | Some (Kwd ":-") ->
+  | Some (Mygenlex.Kwd ".") -> (Stream.junk __strm; { pos = t; neg = []; })
+  | Some (Mygenlex.Kwd ":-") ->
       (Stream.junk __strm;
        let t1 =
          (try parse_term1 __strm
@@ -117,10 +114,10 @@ and parse_clause2 t (__strm : _ Stream.t) =
           with | Stream.Failure -> raise (Stream.Error ""))
        in
          (match Stream.peek __strm with
-          | Some (Kwd ".") ->
+          | Some (Mygenlex.Kwd ".") ->
               (Stream.junk __strm; { pos = t; neg = t1 :: l; })
           | _ -> raise (Stream.Error "")))
-  | Some (Kwd "<--") ->
+  | Some (Mygenlex.Kwd "<--") ->
       (Stream.junk __strm;
        let t1 =
          (try parse_term1 __strm
@@ -130,7 +127,7 @@ and parse_clause2 t (__strm : _ Stream.t) =
           with | Stream.Failure -> raise (Stream.Error ""))
        in
          (match Stream.peek __strm with
-          | Some (Kwd ".") ->
+          | Some (Mygenlex.Kwd ".") ->
               (Stream.junk __strm; { pos = t; neg = t1 :: l; })
           | _ -> raise (Stream.Error "")))
   | _ -> raise Stream.Failure
@@ -147,7 +144,7 @@ let print_subst l =
     match l with
     | [] -> "{ }"
     | (x, t) :: q ->
-      "{ " ^ x " = " ^ (print_terme t) ^ (aux q) ^ " }"
+      "{ " ^ x ^ " = " ^ (print_terme t) ^ (aux q) ^ " }"
 
 let rec parse_prog_parser acc (__strm : _ Stream.t) =
   match try Some (parse_clause1 __strm) with | Stream.Failure -> None with
@@ -187,7 +184,7 @@ let parse_prog acc f =
 let parse_progs lis = List.fold_left parse_prog [] lis
 
 let parse_string acc str =
-  let flx4 = Stream.of_string in
+  let flx4 = Stream.of_string str in
   parse_prog_parser acc (lex flx4)
 
 let parse_strings strs = List.fold_left parse_string [] strs
@@ -344,7 +341,7 @@ let interactive_main () =
          let progs = List.rev (List.tl rev_listargv)
          and fake_read_line = List.hd rev_listargv
          in
-           (print_string ("?- " ^ fake_readline ^ "\n");
+           (print_string ("?- " ^ fake_read_line ^ "\n");
             let prog = parse_progs progs in
             let trm_list = parse_goal fake_read_line
             in prove_goals ~interactive:false prog trm_list))

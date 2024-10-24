@@ -12,6 +12,7 @@ print_endline "cat_ocamlpy_file...";;
 cat_ocamlpy_file ();;
 print_endline "cat_ocamlpy_file done";;
 delay 3000;;
+clear_screen();;
 
 (* (* TODO: read from C and return a OCaml string *) *)
 (* print_endline "read_ocamlpy_file...\r\n";; *)
@@ -26,9 +27,6 @@ delay 3000;;
 (* display_push_allscreen_uniform color_blue;; *)
 (* display_draw_string_small (String.make 50 'X') 0 0;; *)
 (* delay 10000;; *)
-
-let clear_screen () = display_push_allscreen_uniform color_black;;
-clear_screen ();;
 
 (* print_endline "open Genlex...";; *)
 (* open Genlex;; *)
@@ -106,7 +104,7 @@ let main () =
 
   delay 1000; clear_screen ();
   print_endline "Loop #2.";
-  let max_n = 12 in
+  let max_n = 21 in
   for n = 0 to max_n do
     print_string "fact "; print_int n; print_string " = "; print_int (fact n);
     print_newline();
@@ -118,7 +116,7 @@ let main () =
   delay 1000; clear_screen ();
   print_endline "Loop #3.";
   (* FIXME: fibonacci fails VERY quickly, I guess the stack size for recursive function is VERY LIMITED? *)
-  let max_n = 10 in
+  let max_n = 30 in
   for n = 0 to max_n do
     print_string "fibonacci "; print_int n; print_string " = "; print_int (fibonacci n);
     print_newline();
