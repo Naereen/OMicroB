@@ -13,7 +13,7 @@ module type DEVICECONFIG = sig
     string list -> string -> unit
 
   (** Compile a .c to a .hex *)
-  val compile_c_to_hex : local: bool -> trace:int -> verbose:bool ->
+  val compile_c_to_hex : local: bool -> trace:int -> verbose:bool -> cxxopts:string list ->
     string -> string -> unit
 
   (** Additional defined flag for compilation **)
@@ -36,7 +36,7 @@ module DefaultConfig : DEVICECONFIG = struct
     let cmd = cmd @ inputs @ [ "-o"; output ] in
     run ~vars ~verbose cmd
 
-  let compile_c_to_hex ~local:_ ~trace:_ ~verbose:_ _ _ =
+  let compile_c_to_hex ~local:_ ~trace:_ ~verbose:_ ~cxxopts:_ _ _ =
     failwith "The default config doesn't support compiling to hex"
 
   let simul_flag = "__SIMUL_NONE__"

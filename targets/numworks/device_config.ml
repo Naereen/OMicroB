@@ -3,7 +3,6 @@
 let default_arm_cxx_options = [ "-std=c99" ]
                               @ (String.split_on_char ' ' Config.eadk_cflags)
                               @ [ "-Os"; "-Wall"; "-ggdb"]
-(* TODO: ld_flags *)
 
 module NumworksConfig : DEVICECONFIG = struct
   let compile_ml_to_byte ~ppx_options ~mlopts ~cxxopts ~local ~trace ~verbose
@@ -20,10 +19,12 @@ module NumworksConfig : DEVICECONFIG = struct
   (* See: https://stackoverflow.com/questions/5555632/can-gcc-not-complain-about-undefined-references#5556948 for a reference *)
   let cmd = cmd @ [ "-ccopt"; "-Wl,--allow-shlib-undefined,--unresolved-symbols=ignore-all" ] in
   let cmd = cmd @ inputs @ [ "-o"; output ] in
-  run ~vars ~verbose cmd
+  Printf.printf "################## Compile  a .ml into a .byte\n";
+  run ~vars ~verbose cmd;
+  Printf.printf "################## Compiled a .ml into a .byte\n"
 
 
-let compile_c_to_hex ~local ~trace:_ ~verbose input output =
+let compile_c_to_hex ~local ~trace:_ ~verbose ~cxxopts input output =
   let includedir = includedir local in
   let numworksdir =
     if local then Filename.concat Config.builddir "src/byterun/numworks"
@@ -37,15 +38,17 @@ let compile_c_to_hex ~local ~trace:_ ~verbose input output =
 
   let conc_numworks s = Filename.concat numworksdir s in
   let cmd = [ Config.arm_cxx ] @ default_arm_cxx_options in
+  let cmd = cmd @ cxxopts in
   let cmd = cmd @ [ "-D__NUMWORKS__" ] in
   let cmd = cmd @ [ "-I"; Filename.concat includedir "numworks" ] in
   let cmd = cmd @ [ "-o"; arm_o_file ] @ [ "-c"; input ] in
-  Printf.printf "################## Compile a .c into a .arm_o\n";
+  Printf.printf "################## Compile  a .c into a .arm_o\n";
   run ~verbose cmd;
   Printf.printf "################## Compiled a .c into a .arm_o\n";
 
   (* Compile a .arm_o into a .arm_elf *)
   let cmd = [ Config.arm_cxx ] @ default_arm_cxx_options in
+  let cmd = cmd @ cxxopts in
   let cmd = cmd @ [ "-Wl,--relocatable" ] in
   let cmd = cmd @ [ "-nostartfiles" ] in
   (* FIXED: find which -specs=... file should be used *)
@@ -61,12 +64,15 @@ let compile_c_to_hex ~local ~trace:_ ~verbose input output =
   let cmd = cmd @ [ "-lm" ] in
   let cmd = cmd @ [ "-o" ; arm_elf_file ] in
   List.iter (Printf.printf "%s ") cmd;
+  Printf.printf "################## Compile  a .arm_o into a .arm_elf\n";
   run ~verbose cmd;
   Printf.printf "################## Compiled a .arm_o into a .arm_elf\n";
 
   (* Compile a .arm_elf into a .hex *)
+  Printf.printf "################## Compile  a .arm_elf into a .hex\n";
   let cmd = [ "cp"; arm_elf_file; output ] in
-  run ~verbose cmd
+  run ~verbose cmd;
+  Printf.printf "################## Compiled a .arm_elf into a .hex\n"
 
   let simul_flag = "__SIMUL_NUMWORKS__"
 

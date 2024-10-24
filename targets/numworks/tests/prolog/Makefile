@@ -4,7 +4,11 @@ PROG = prolog
 EADK_APP_NAME = OCaml-Prolog
 DEVICE ?= numworks
 
-TARGETS := $(PROG).hex $(PROG).elf
+# FIXME: my examples of recursive functions broke quite quickly, do they perform better with an increased STACK_SIZE and HEAP_SIZE ?
+STACK_SIZE = 2048
+HEAP_SIZE = 8192
+
+TARGETS := $(PROG).hex
 
 OCAMLOPT = ocamlopt.opt
 OCAMLC = ocamlc.opt
@@ -13,16 +17,18 @@ OCAMLC = ocamlc.opt
 all: $(TARGETS)
 	cp -vf $(PROG).hex $(PROG).nwa
 
-$(TARGETS): $(PROG).ml mygenlex.ml
+$(TARGETS): mystream.mli mystream.ml mygenlex.mli mygenlex.ml $(PROG).ml
 	@echo "omicrob $<"
-	$(BIN)/omicrob -v -cxxopt=-DEADK_APP_NAME=$(EADK_APP_NAME) -device=$(DEVICE) $^ -o $@
+	$(BIN)/omicrob -v -stack-size $(STACK_SIZE) -heap-size $(HEAP_SIZE) -cxxopt=-DEADK_APP_NAME=$(EADK_APP_NAME) -mlopt=-ccopt=-DEADK_APP_NAME=$(EADK_APP_NAME) -device=$(DEVICE) $^ -o $@
 
 
 # TODO: include inline the content of mygenlex.ml in prolog.ml: it should be ONE file, with no dependencies...
 # TODO: solve the issue of the Stream module? Either include it in OMicroB/stdlib/ or include it here?
 
-$(PROG).elf:	$(PROG).ml
+$(PROG).exe:	$(PROG).ml
 	@echo "OCAMLOPT $<"
+	$(OCAMLOPT) -c mystream.mli
+	$(OCAMLOPT) -c mystream.ml
 	$(OCAMLOPT) -c mygenlex.mli
 	$(OCAMLOPT) -c mygenlex.ml
 	$(OCAMLOPT) -o $@ mygenlex.cmx $^
@@ -39,7 +45,7 @@ $(PROG).bytecode:	$(PROG).ml mygenlex.ml
 
 .PHONY: run
 clean:
-	rm -vf *.cmi *.cmo *.cmx *.byte *.c *.arm_o *.elf *.arm_elf *.hex *.nwa *.elf *.bytecode *.o
+	rm -vf *.cmi *.cmo *.cmx *.byte *.c *.arm_o *.elf *.arm_elf *.hex *.nwa *.elf *.bytecode *.o *.exe
 
 NWLINK = npx --yes -- nwlink@0.0.17
 

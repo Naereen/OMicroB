@@ -610,7 +610,7 @@ let () =
         Some input_path;
       ] ".hex" in
 
-    DeviceConfig.compile_c_to_hex ~local ~trace ~verbose input_path output_path;
+    DeviceConfig.compile_c_to_hex ~local ~trace ~verbose ~cxxopts input_path output_path;
 
     available_hex := Some output_path)
 
