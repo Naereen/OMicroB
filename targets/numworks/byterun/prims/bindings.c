@@ -20,6 +20,7 @@
 /*********************** caml_numworks functions ************************/
 /************************************************************************/
 
+// TODO: break on '\n' in the input string, and jump on a newline manually for every \n found?
 value caml_numworks_print_string(value s) {
   #ifdef __OCAML__
   printf("%s", String_val(s));
@@ -34,8 +35,8 @@ value caml_numworks_print_string(value s) {
 }
 
 value caml_numworks_print_newline(value s) {
-  // TODO: find out how to print a real newline: \n didn't work, so maybe \r\n would work?
-  printf("\n\r");
+  // TODO: find out how to print a real newline: \n and \r\n and \n\r didn't work
+  printf("\r\n");
   return Val_unit;
 }
 
@@ -199,15 +200,20 @@ value caml_read_any_file(value v) {
     display_draw_string_full(filename, 0, 18, true, color_black, color_red);
     delay(5000);
 
+    #ifdef __OCAML__
+    return caml_copy_string("");
+    #else
     return (value)("");
+    #endif
   }
 
   // The file is found, so we return his content (content + 1 is for the autoimport status), converted to a value
   // Create a new OCaml string, using caml_copy_string(char* s), see https://ocaml.org/manual/5.2/intfc.html#ss:c-block-allocation
-  // return caml_copy_string(content + 1);
+  #ifdef __OCAML__
+  return caml_copy_string(content + 1);
+  #else
   return (value)(content + 1);
-  // Create a new OCaml string, using caml_alloc_initialized_string(mlsize_t len, char* s), see https://ocaml.org/manual/5.2/intfc.html#ss:c-block-allocation
-  // return caml_alloc_initialized_string(file_len, content + 1);
+  #endif
 }
 
 #endif

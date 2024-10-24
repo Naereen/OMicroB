@@ -8,19 +8,23 @@ Then flash the hello.nwa app to your Numworks calculator, using <https://my.numw
 *)
 
 (* WOOW reading and displaying the content of a file (from C) worked! *)
-(* print_string "cat_ocamlpy_file...";; *)
+(* print_endline "cat_ocamlpy_file...";; *)
 (* cat_ocamlpy_file ();; *)
-(* print_string "cat_ocamlpy_file done";; *)
+(* print_endline "cat_ocamlpy_file done";; *)
 (* delay 10000;; *)
 
 (* TODO: read from C and return a OCaml string *)
-print_string "read_ocamlpy_file...";;
+print_endline "read_ocamlpy_file...\r\n";;
 let content_of_ocamlpy_file : string = read_ocamlpy_file () ;;
-print_string "read_ocamlpy_file done";;
+print_endline "read_ocamlpy_file done\r\n";;
 delay 5000;;
 
 display_push_allscreen_uniform color_black;;
 display_draw_string_small content_of_ocamlpy_file 0 0;;
+delay 10000;;
+
+display_push_allscreen_uniform color_blue;;
+display_draw_string_small (String.make 10000 'X') 0 0;;
 delay 10000;;
 
 
@@ -39,12 +43,17 @@ let rec fibonacci n =
 (** TODO: finish this main() test function. *)
 let main () =
   delay 1000;
-  print_endline "Starting tests";
+  print_endline "Starting main() tests...\r\nIn 10 secs\r\n";
+  delay 10000;
+
+  (* Dynamically generated strings works fine too *)
+  delay 1000;
+  print_endline (String.make 100 'X');
 
   assert(true);
   (* this should fail ! what happens for an assert(false) on the Numworks ? *)
   (* assert(120 < 100); *)
-  (* FIXME: this prints "error" continuously *)
+  (* FIXME: this prints "error" continuously... not very useful... *)
 
   delay_usec 1_000_000;
   print_endline "After a delay_usec 1_000_000";
@@ -59,9 +68,13 @@ let main () =
   print_endline "Trying print_int 42:";
   print_int 42;
 
-  (* delay 1000;
+  delay 1000;
   print_endline "Trying print_float 3.1415:";
-  print_float 3.1415; *)
+  print_float 3.1415;
+
+  delay 1000;
+  print_endline "Trying print_char '?':";
+  print_char '?';
 
   delay 1000;
   print_endline "Trying millis():";
@@ -85,7 +98,7 @@ let main () =
 
   delay 1000;
   print_endline "Loop #2.";
-  let max_n = 10 in
+  let max_n = 25 in
   for n = 0 to max_n do
     print_string "fact "; print_int n; print_string " = "; print_int (fact n);
     print_newline();
@@ -95,14 +108,14 @@ let main () =
   delay 1000;
 
   delay 1000;
-  print_endline "Loop #2.";
-  let max_n = 10 in
+  print_endline "Loop #3.";
+  let max_n = 40 in
   for n = 0 to max_n do
     print_string "fibonacci "; print_int n; print_string " = "; print_int (fibonacci n);
     print_newline();
     delay 100;
   done;
-  print_endline "End loop #2.";
+  print_endline "End loop #3.";
   delay 1000;
 
   let delta_y = 18 in
@@ -121,7 +134,7 @@ let main () =
   delay 250;
 
   let small_delta_y = 10 in
-  for i = 1 to 20 do
+  for i = 1 to 23 do
     let x = i and y = small_delta_y * i in
     let text =
       "draw small at {"
