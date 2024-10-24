@@ -69,7 +69,6 @@ let cat_ocamlpy_file () =
   cat_any_file "ocaml.py"
 ;;
 
-(* FIXME: this doesn't work YET. *)
 external read_any_file : string -> string = "caml_read_any_file" [@@noalloc]
 let read_ocamlpy_file () =
   read_any_file "ocaml.py"

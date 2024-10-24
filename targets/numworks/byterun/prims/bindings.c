@@ -3,11 +3,9 @@
 /******************************************************************************/
 
 #ifdef __OCAML__
-// #if defined(__OCAML__) || defined(__PC__) || defined(__NUMWORKS__)
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
 #include <caml/memory.h>
-// #include <caml/fail.h>
 #endif
 
 #if defined(__OCAML__) || defined(__PC__) || defined(__NUMWORKS__)
@@ -42,12 +40,14 @@ value caml_numworks_print_newline(value s) {
 
 value caml_numworks_print_endline(value s) {
   #ifdef __OCAML__
+  // TODO: find out how to print a real newline: \n and \r\n and \n\r didn't work
   printf("%s\r\n", String_val(s));
   #else
   int n = caml_string_length(s); int i;
   char buf[n+1];
   for(i = 0; i < n; i++) buf[i] = String_field(s, i);
   buf[n] = '\0';
+  // TODO: find out how to print a real newline: \n and \r\n and \n\r didn't work
   printf("%s\r\n", buf);
   #endif
   return Val_unit;
