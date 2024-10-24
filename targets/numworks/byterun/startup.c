@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
+// FIXME: I would like to be able to change this "parameter" from the Makefile of a given NWA app... so far, I failed.
 #ifndef EADK_APP_NAME
 #define EADK_APP_NAME "OMicroB OCaml"
 #endif

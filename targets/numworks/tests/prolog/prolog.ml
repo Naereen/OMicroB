@@ -302,6 +302,7 @@ let prove_goals ?(maxoutput = 10) ?(interactive = true) prog trm_list =
 
 (* prolog.ml *)
 
+(* TODO: this should be READ from a "prolog_theory.py" file, from the local storage *)
 let default_programs = ["
 cat(tom).
 mouse(jerry).
@@ -311,24 +312,34 @@ stupid(X) <-- cat(X).
 
 ishuntedby(X, Y) <-- mouse(X), cat(Y).
 "]
+(* let default_programs = [ read_any_file "prolog_theory.py" ] *)
 
+(* TODO: this should be READ from a "prolog_questions.py" file, from the local storage *)
 let default_questions = [
   "stupid(X).";
   "fast(Y).";
   "ishuntedby(Z, W).";
 ]
+(* let default_questions = [ read_any_file "prolog_questions.py" ] *)
 
-let default_main() =
+let numworks_main () =
+  let delay_secs = 2 * 1000 in
+  clear_screen ();
+  delay delay_secs;
   print_string "Loading ";
   print_int (List.length default_programs);
   print_endline " theory file(s)...";
+  delay delay_secs;
   let prog = parse_strings default_programs in
+  clear_screen ();
   print_endline "Loaded theory files...";
+  delay delay_secs;
 
   List.iter (fun question ->
     print_string ("\n?- " ^ question ^ "\n");
     let trm_list = parse_goal question in
-    prove_goals ~interactive:false prog trm_list
+    prove_goals ~interactive:false prog trm_list;
+    delay delay_secs; clear_screen()
   ) default_questions
 
 (* let interactive_main () =
@@ -355,7 +366,7 @@ let default_main() =
             in prove_goals ~interactive:true prog trm_list))
     else () *)
 (* TODO: add interactivity ? at least read the content of the "prolog.py" file, on the Numworks *)
-let interactive_main = default_main
+let interactive_main = numworks_main
 
 let interactive = false ;;
 
@@ -363,7 +374,7 @@ let main () =
   if interactive then
     interactive_main ()
   else
-    default_main ()
+    numworks_main ()
 ;;
 
 main ();;

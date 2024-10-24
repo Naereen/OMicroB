@@ -58,18 +58,6 @@ value caml_numworks_print_int(value i) {
   return Val_unit;
 }
 
-// FIXME: Char_val doesn't exist...
-// value caml_numworks_print_char(value c) {
-//   printf("%c", (char)Char_val(c));
-//   return Val_unit;
-// }
-
-// FIXME: Double_val does exist but it doesn't compile correctly?
-// value caml_numworks_print_float(value f) {
-//   printf("%f", (double)Double_val(f));
-//   return Val_unit;
-// }
-
 value caml_delay_usec(value us) {
   delay_usec(Val_int(us));
   return Val_unit;

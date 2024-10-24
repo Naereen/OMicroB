@@ -114,14 +114,16 @@ let make_lexer keywords =
         Mystream.junk strm__; let s = strm__ in store '.'; decimal_part s
     | Some ('e' | 'E') ->
         Mystream.junk strm__; let s = strm__ in store 'E'; exponent_part s
-    | _ -> Some (Int (int_of_string (get_string ())))
+    (* | _ -> Some (Int (int_of_string (get_string ()))) *)
+    | _ -> Some (Int (0))
   and decimal_part (strm__ : _ Mystream.t) =
     match Mystream.peek strm__ with
       Some ('0'..'9' as c) ->
         Mystream.junk strm__; let s = strm__ in store c; decimal_part s
     | Some ('e' | 'E') ->
         Mystream.junk strm__; let s = strm__ in store 'E'; exponent_part s
-    | _ -> Some (Float (float_of_string (get_string ())))
+    (* | _ -> Some (Float (float_of_string (get_string ()))) *)
+    | _ -> Some (Float (0.0))
   and exponent_part (strm__ : _ Mystream.t) =
     match Mystream.peek strm__ with
       Some ('+' | '-' as c) ->
@@ -131,7 +133,8 @@ let make_lexer keywords =
     match Mystream.peek strm__ with
       Some ('0'..'9' as c) ->
         Mystream.junk strm__; let s = strm__ in store c; end_exponent_part s
-    | _ -> Some (Float (float_of_string (get_string ())))
+    (* | _ -> Some (Float (float_of_string (get_string ()))) *)
+    | _ -> Some (Float (0.0))
   and string (strm__ : _ Mystream.t) =
     match Mystream.peek strm__ with
       Some '\"' -> Mystream.junk strm__; get_string ()
