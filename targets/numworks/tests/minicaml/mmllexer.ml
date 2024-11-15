@@ -1,5 +1,7 @@
 # 1 "lib/mmllexer.mll"
 
+  (* external int_of_string : string -> int = "caml_int_of_string" *)
+  external int_of_string : string -> int = "caml_int64_of_string"
 
   open Mylexing
   open Mmlparser
