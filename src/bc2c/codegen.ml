@@ -250,9 +250,11 @@ let export_code_from_codemap code codemap =
     | STD PUSHOFFSETCLOSURE2 ->
       export_opcode Opcode.PUSHOFFSETCLOSURE2;
     | STD (PUSHOFFSETCLOSURE n) ->
+      (* FIXME: this was the previous version, which broke my build of targets/numworks/tests/minicaml/ *)
+      (* (PUSHOFFSETCLOSURE n) accepts n as an int8, but I found example when it was 166 (>= 128) or -156 (< -128). *)
       check_bounds "PUSHOFFSETCLOSURE" n (-0x80) 0x7F;
       export_opcode Opcode.PUSHOFFSETCLOSURE;
-      export_int8 n;
+      export_int8 n;      
     | STD (GETGLOBAL _)
     | STD (PUSHGETGLOBAL _)
     | STD (GETGLOBALFIELD _)
